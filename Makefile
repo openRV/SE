@@ -9,4 +9,5 @@ build:
 init:
 	go version
 	go get github.com/gin-gonic/gin
+	go get github.com/mattn/go-sqlite3
 	go mod download github.com/gin-gonic/gin

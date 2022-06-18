@@ -1,6 +1,7 @@
 package main
 
 import (
+	//"SE/src/db"
 	"fmt"
 	"net/http"
 
@@ -19,4 +20,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+
+	//db.TestDB()
+
 }
