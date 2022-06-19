@@ -1,0 +1,9 @@
+title = "this is the title"
+
+[database]
+    path = "./tmp/SE.db"
+    type = "sqlite3"
+
+[log]
+    path = "./tmp/SE.log"
+

@@ -1,12 +1,27 @@
 package main
 
+import (
+	"SE/src/database"
+	initMod "SE/src/init"
+	"fmt"
+)
+
 //"SE/src/db"
-//	"fmt"
 //	"net/http"
 //
 //	"github.com/gin-gonic/gin"
 
 func main() {
+
+	// init system
+	if err := initMod.Init(ConfPath); err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	database.Test()
+
+	//}
 	//	router := gin.Default()
 	//
 	//	router.GET("/test", func(c *gin.Context) {
