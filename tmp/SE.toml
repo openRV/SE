@@ -10,4 +10,5 @@ title = "this is the title"
 [server]
     capcity = 500     # 令牌桶初始值及最大容量
     quantum = 200     # 每秒新增请求数
+    key = "privatekey" # 用于生成token的密钥
         

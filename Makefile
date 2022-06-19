@@ -1,4 +1,4 @@
-.PHONY: run build init
+.PHONY: run build init cloc
 
 run:
 	go run src/*.go
@@ -13,4 +13,8 @@ init:
 	go get github.com/BurntSushi/toml
 	go get github.com/juju/ratelimit
 	go get github.com/sirupsen/logrus
+	go get github.com/dgrijalva/jwt-go
 	go mod download github.com/gin-gonic/gin
+
+cloc:
+	cloc .

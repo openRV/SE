@@ -15,9 +15,7 @@ func newLogger(file *os.File) *logrus.Logger {
 	logger.Out = file
 	logger.SetLevel(logrus.DebugLevel)
 
-	logger.SetFormatter(&logrus.JSONFormatter{
-		TimestampFormat: "2022-6-24",
-	})
+	logger.SetFormatter(&logrus.JSONFormatter{})
 	return logger
 }
 

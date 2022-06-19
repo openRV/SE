@@ -23,8 +23,9 @@ type Log struct {
 }
 
 type Server struct {
-	Capcity int `toml:"capcity"`
-	Quantum int `toml:"quantum"`
+	Capcity int    `toml:"capcity"`
+	Quantum int    `toml:"quantum"`
+	Key     string `toml:"key"`
 }
 
 func initConf(ConfPath string) (*Config, error) {
