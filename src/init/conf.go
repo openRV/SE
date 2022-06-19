@@ -10,6 +10,7 @@ type Config struct {
 	Title    string   `toml:"title"`
 	Database Database `toml:"database"`
 	Log      Log      `toml:"log"`
+	Server   Server   `toml:"server"`
 }
 
 type Database struct {
@@ -19,6 +20,11 @@ type Database struct {
 
 type Log struct {
 	Path string `toml:"path"`
+}
+
+type Server struct {
+	Capcity int `toml:"capcity"`
+	Quantum int `toml:"quantum"`
 }
 
 func initConf(ConfPath string) (*Config, error) {

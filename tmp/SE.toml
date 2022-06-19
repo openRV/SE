@@ -1,9 +1,13 @@
 title = "this is the title"
 
 [database]
-    path = "./tmp/SE.db"
-    type = "sqlite3"
+    path = "./tmp/SE.db"  # 数据库存储路径
+    type = "sqlite3"      # 数据库类型，默认 sqlite3
 
 [log]
-    path = "./tmp/SE.log"
+    path = "./tmp/SE.log" # 默认日志文件路径
 
+[server]
+    capcity = 500     # 令牌桶初始值及最大容量
+    quantum = 200     # 每秒新增请求数
+        

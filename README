@@ -1,5 +1,15 @@
+# SE
+
 ## 启动流程
 
 - 编译时从 const.go 中获取配置文件地址
 - 启动时从 const.go 中指定的配置文件路径中读取配置文件 (SE.toml)
 - 根据 SE.toml 的内容依次初始化 配置文件 日志 数据库
+
+## 数据库表
+
+### User
+
+| username | password | avatar |
+| --- | --- | --- |
+| string key | string | string |
