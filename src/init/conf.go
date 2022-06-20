@@ -1,21 +1,18 @@
 package init
 
 import (
+	"SE/src/database"
+
 	"fmt"
 
 	"github.com/BurntSushi/toml"
 )
 
 type Config struct {
-	Title    string   `toml:"title"`
-	Database Database `toml:"database"`
-	Log      Log      `toml:"log"`
-	Server   Server   `toml:"server"`
-}
-
-type Database struct {
-	Path string `toml:"path"`
-	Type string `toml:"type"`
+	Title    string            `toml:"title"`
+	Database database.Database `toml:"database"`
+	Log      Log               `toml:"log"`
+	Server   Server            `toml:"server"`
 }
 
 type Log struct {

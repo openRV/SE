@@ -15,7 +15,13 @@ type Claim struct {
 	jwt.StandardClaims
 }
 
-func TokenCheck(key string) gin.HandlerFunc {
+var key string
+
+func InitToken(keyStr string) {
+	key = keyStr
+}
+
+func TokenCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		// get token string from request

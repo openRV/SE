@@ -1,6 +1,8 @@
 package Router
 
 import (
+	"SE/src/middleware"
+
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,11 +11,18 @@ import (
 func MainRouter(router *gin.Engine) {
 
 	// router group
-	//admin := router.Group("/admin")
-	//open := router.Group("/open")
-	//user := router.Group("/user")
+	admin := router.Group("/admin")
+	open := router.Group("/open")
+	user := router.Group("/user")
 
-	router.GET("/test", func(c *gin.Context) {
+	admin.Use(middleware.TokenCheck())
+	user.Use(middleware.TokenCheck())
+
+	open.GET("/test", func(c *gin.Context) {
+		c.IndentedJSON(http.StatusOK, "OK")
+	})
+
+	admin.GET("/test", func(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, "OK")
 	})
 

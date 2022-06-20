@@ -22,10 +22,13 @@ func Init(ConfPath string) error {
 	logFile := initLog(conf.Log.Path)
 
 	// init db
-	err = database.InitDB(conf.Database.Type, conf.Database.Path)
+	err = database.InitDB(conf.Database)
 	if err != nil {
 		return err
 	}
+
+	// init token
+	middleware.InitToken(conf.Server.Key)
 
 	// init gin server
 	gin.SetMode(gin.DebugMode)
