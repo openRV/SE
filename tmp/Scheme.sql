@@ -2,7 +2,7 @@ CREATE TABLE Doc
 (
     docsId INTEGER not NULL PRIMARY KEY,
     docsName VARCHAR not NULL,
-    docsFile,
+    --docsFile ,
     author VARCHAR,
     createDate VARCHAR,
     lastView VARCHAR,
@@ -14,16 +14,17 @@ CREATE TABLE Dir
 (
     dirId INTEGER not NULL PRIMARY KEY,
     dirName VARCHAR not NULL,
-    owner ————————,
+    owner integer,
     lastView VARCHAR,
     createDate VARCHAR,
     subDir INTEGER
 );
 
 CREATE TABLE User(
-    userName VARCHAR not NULL PRIMARY KEY,
+    userName VARCHAR not NULL,
     password VARCHAR not NULL,
     registDate VARCHAR,
     role CHAR(5),
-    avarat,
+    --avarat,
+    PRIMARY KEY(userName,password)
 );
