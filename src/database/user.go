@@ -17,7 +17,7 @@ type UserSearchRet struct {
 
 func SearchUser(user User) UserSearchRet {
 
-	stmt, err := DB.Prepare("select password , registDate , role , avarat from User where userName = ?")
+	stmt, err := DB.Prepare("select password , registDate , role , avatar from User where userName = ?")
 	if err != nil {
 		fmt.Println(err)
 		return UserSearchRet{
@@ -28,7 +28,7 @@ func SearchUser(user User) UserSearchRet {
 
 	var ret = UserSearchRet{Exist: true, Password: true}
 	var password string
-	err = stmt.QueryRow(user.Username).Scan(&password, ret.RegistDate, ret.Role, ret.Avatar)
+	err = stmt.QueryRow(user.Username).Scan(&password, &ret.RegistDate, &ret.Role, &ret.Avatar)
 	if err != nil {
 		fmt.Println(err)
 		return UserSearchRet{

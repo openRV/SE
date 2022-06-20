@@ -21,10 +21,9 @@ CREATE TABLE Dir
 );
 
 CREATE TABLE User(
-    userName VARCHAR not NULL,
+    userName VARCHAR not NULL PRIMARY KEY,
     password VARCHAR not NULL,
     registDate VARCHAR,
     role CHAR(5),
-    --avarat,
-    PRIMARY KEY(userName,password)
+    avatar VARCHAR
 );

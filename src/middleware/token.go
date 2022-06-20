@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"SE/src/database"
 	Interface "SE/src/interface"
 	"fmt"
 	"time"
@@ -17,11 +18,11 @@ type Claim struct {
 	jwt.StandardClaims
 }
 
-var key string
+var key []byte
 var effectTime time.Duration
 
 func InitToken(keyStr string, hourTime int) {
-	key = keyStr
+	key = []byte(keyStr)
 	effectTime = time.Hour * time.Duration(hourTime)
 }
 
@@ -44,18 +45,31 @@ func TokenCheck() gin.HandlerFunc {
 				c.IndentedJSON(http.StatusUnauthorized, Interface.ErrorRes{Success: false, Msg: "Please login first"})
 				c.Abort()
 			}
-			// TODO search database for the username & password
+
+			user := database.SearchUser(database.User{Username: Claim.Name, Password: Claim.Password})
+			if !user.Exist {
+				// not a existing user
+				c.IndentedJSON(http.StatusUnauthorized, Interface.ErrorRes{Success: false, Msg: "Invalid username"})
+			} else if !user.Password {
+				// password incorrect
+				c.IndentedJSON(http.StatusUnauthorized, Interface.ErrorRes{Success: false, Msg: "Invalid password"})
+			}
+
+			c.Request.Header.Add("role", user.Role)
+			c.Request.Header.Add("username", Claim.Name)
+			c.Request.Header.Add("password", Claim.Password)
+			// TODO these method need more test
 		}
 		c.Next()
 	}
 }
 
-func GenToken(json map[string]interface{}) string {
+func GenToken(username string, password string) string {
 
 	expireTime := time.Now().Add(effectTime)
 	claims := &Claim{
-		Name:     json["username"].(string),
-		Password: json["password"].(string),
+		Name:     username,
+		Password: password,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			IssuedAt:  time.Now().Unix(),
