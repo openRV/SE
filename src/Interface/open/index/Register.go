@@ -10,7 +10,7 @@ type RegisterParams struct {
 }
 
 type RegisterResult struct {
-	Success string `json:"success"`
+	Success bool `json:"success"`
 }
 
 type Register struct {

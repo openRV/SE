@@ -1,6 +1,9 @@
 package database
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 type User struct {
 	Username string
@@ -13,6 +16,11 @@ type UserSearchRet struct {
 	RegistDate string
 	Role       string
 	Avatar     string
+}
+
+type RegisterRet struct {
+	Success bool
+	Msg     string
 }
 
 func SearchUser(user User) UserSearchRet {
@@ -43,5 +51,71 @@ func SearchUser(user User) UserSearchRet {
 	}
 
 	return ret
+
+}
+
+func RegisterUser(user User) RegisterRet {
+
+	//	stmt, err := tx.Prepare("insert into foo(id, name) values (?,?)")
+	//	if err != nil {
+	//		fmt.Println(err)
+	//		return
+	//	}
+	//	defer stmt.Close()
+	//
+
+	//	for i := 0; i < 100; i++ {
+	//		_, err = stmt.Exec(i, fmt.Sprintf("Hello world %03d", i))
+	//		if err != nil {
+	//			fmt.Println(err)
+	//			return
+	//		}
+	//	}
+	//	err = tx.Commit()
+	//	if err != nil {
+	//		fmt.Println(err)
+	//		return
+	//	}
+
+	stmt, err := DB.Prepare("select * from User where userName = ?")
+	if err != nil {
+		fmt.Println(err)
+		return RegisterRet{
+			Success: false,
+			Msg:     "database error",
+		}
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(user.Username).Scan(nil)
+	if err == nil {
+		fmt.Println(err)
+		return RegisterRet{
+			Success: false,
+			Msg:     "username already been used",
+		}
+	}
+
+	stmt, err = DB.Prepare("insert into User(userName , password , registDate , role , avatar) values (?,?,?,?,?)")
+	if err != nil {
+		fmt.Println(err)
+		return RegisterRet{
+			Success: false,
+			Msg:     "database error",
+		}
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(user.Username, user.Password, time.Now().Format("2006-01-02 15:04:05"), "user", "https://ui-avatars.com/api/?name="+user.Username)
+	if err != nil {
+		fmt.Println(err)
+		return RegisterRet{
+			Success: false,
+			Msg:     "insert process error",
+		}
+	}
+	return RegisterRet{
+		Success: true,
+	}
 
 }

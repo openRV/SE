@@ -20,9 +20,6 @@ func Login(c *gin.Context) {
 	username := json["userName"].(string)
 	password := json["password"].(string)
 
-	//username := c.PostForm("userName")
-	//password := c.PostForm("password")
-
 	if username == "" {
 		c.IndentedJSON(http.StatusOK,
 			Interface.ErrorRes{Success: false, Msg: "empty username"})
