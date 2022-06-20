@@ -2,34 +2,33 @@ package main
 
 import (
 	initMod "SE/src/init"
+	"SE/src/middleware"
+	Router "SE/src/router"
 	"fmt"
+	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 //	"net/http"
 //
-//	"github.com/gin-gonic/gin"
 
 func main() {
 
 	// init system
-	if err := initMod.Init(ConfPath); err != nil {
+	conf, err, logFile := initMod.Init(ConfPath)
+	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
 
-	//}
-	//	router := gin.Default()
-	//
-	//	router.GET("/test", func(c *gin.Context) {
-	//		c.IndentedJSON(http.StatusOK, "Test OK")
-	//	})
-	//
-	//	err := router.Run(":8080")
-	//	if err != nil {
-	//		fmt.Println(err)
-	//		return
-	//	}
+	// init gin server
+	gin.SetMode(gin.DebugMode)
+	router := gin.Default()
+	router.Use(middleware.Cors())
+	router.Use(middleware.RateLimit(time.Second, int64(conf.Server.Capcity), int64(conf.Server.Quantum)))
+	router.Use(middleware.Logger(logFile))
 
-	//db.TestDB()
+	Router.MainRouter(router)
 
 }

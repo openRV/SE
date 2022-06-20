@@ -1,21 +1,17 @@
 package init
 
 import (
-	"SE/src/Router"
 	"SE/src/database"
 	"SE/src/middleware"
-
-	"time"
-
-	"github.com/gin-gonic/gin"
+	"os"
 )
 
-func Init(ConfPath string) error {
+func Init(ConfPath string) (*Config, error, *os.File) {
 
 	// read Config file
 	conf, err := initConf(ConfPath)
 	if err != nil {
-		return err
+		return nil, err, nil
 	}
 
 	// init log
@@ -24,20 +20,11 @@ func Init(ConfPath string) error {
 	// init db
 	err = database.InitDB(conf.Database)
 	if err != nil {
-		return err
+		return nil, err, nil
 	}
 
 	// init token
 	middleware.InitToken(conf.Server.Key, conf.Server.Period)
 
-	// init gin server
-	gin.SetMode(gin.DebugMode)
-	router := gin.Default()
-	router.Use(middleware.Cors())
-	router.Use(middleware.RateLimit(time.Second, int64(conf.Server.Capcity), int64(conf.Server.Quantum)))
-	router.Use(middleware.Logger(logFile))
-
-	Router.MainRouter(router)
-
-	return nil
+	return conf, nil, logFile
 }

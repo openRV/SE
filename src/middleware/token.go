@@ -55,9 +55,9 @@ func TokenCheck() gin.HandlerFunc {
 				c.IndentedJSON(http.StatusUnauthorized, Interface.ErrorRes{Success: false, Msg: "Invalid password"})
 			}
 
-			c.Request.Header.Add("role", user.Role)
-			c.Request.Header.Add("username", Claim.Name)
-			c.Request.Header.Add("password", Claim.Password)
+			c.Request.Header.Add("Role", user.Role)
+			c.Request.Header.Add("Username", Claim.Name)
+			c.Request.Header.Add("Password", Claim.Password)
 			// TODO these method need more test
 		}
 		c.Next()
