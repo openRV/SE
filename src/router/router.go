@@ -2,8 +2,7 @@ package Router
 
 import (
 	"SE/src/middleware"
-
-	"net/http"
+	openPackage "SE/src/router/open"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,13 +17,7 @@ func MainRouter(router *gin.Engine) {
 	admin.Use(middleware.TokenCheck())
 	user.Use(middleware.TokenCheck())
 
-	open.GET("/test", func(c *gin.Context) {
-		c.IndentedJSON(http.StatusOK, "OK")
-	})
-
-	admin.GET("/test", func(c *gin.Context) {
-		c.IndentedJSON(http.StatusOK, "OK")
-	})
+	open.POST("/login", openPackage.Login)
 
 	router.Run(":8080")
 }

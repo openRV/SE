@@ -1,7 +1,6 @@
 package main
 
 import (
-	"SE/src/database"
 	initMod "SE/src/init"
 	"fmt"
 )
@@ -17,8 +16,6 @@ func main() {
 		fmt.Println(err.Error())
 		return
 	}
-
-	database.Test()
 
 	//}
 	//	router := gin.Default()

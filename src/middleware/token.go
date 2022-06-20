@@ -2,6 +2,8 @@ package middleware
 
 import (
 	Interface "SE/src/interface"
+	"fmt"
+	"time"
 
 	"net/http"
 
@@ -16,9 +18,11 @@ type Claim struct {
 }
 
 var key string
+var effectTime time.Duration
 
-func InitToken(keyStr string) {
+func InitToken(keyStr string, hourTime int) {
 	key = keyStr
+	effectTime = time.Hour * time.Duration(hourTime)
 }
 
 func TokenCheck() gin.HandlerFunc {
@@ -44,4 +48,25 @@ func TokenCheck() gin.HandlerFunc {
 		}
 		c.Next()
 	}
+}
+
+func GenToken(json map[string]interface{}) string {
+
+	expireTime := time.Now().Add(effectTime)
+	claims := &Claim{
+		Name:     json["username"].(string),
+		Password: json["password"].(string),
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expireTime.Unix(),
+			IssuedAt:  time.Now().Unix(),
+			Subject:   "user token",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenString, err := token.SignedString(key)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return tokenString
 }

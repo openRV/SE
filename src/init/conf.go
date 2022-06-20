@@ -23,6 +23,7 @@ type Server struct {
 	Capcity int    `toml:"capcity"`
 	Quantum int    `toml:"quantum"`
 	Key     string `toml:"key"`
+	Period  int    `toml:"period"`
 }
 
 func initConf(ConfPath string) (*Config, error) {

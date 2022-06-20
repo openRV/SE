@@ -28,7 +28,7 @@ func Init(ConfPath string) error {
 	}
 
 	// init token
-	middleware.InitToken(conf.Server.Key)
+	middleware.InitToken(conf.Server.Key, conf.Server.Period)
 
 	// init gin server
 	gin.SetMode(gin.DebugMode)

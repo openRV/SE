@@ -14,7 +14,7 @@ type LoginResult struct {
 		Role   string `json:"role"` // admin | user
 		Token  string `json:""token`
 		Name   string `json:"name"`   // 用户 Account 唯一
-		Acatar string `json:"avatar"` // 头像 string
+		Avatar string `json:"avatar"` // 头像 string
 	} `json:"data"`
 }
 
