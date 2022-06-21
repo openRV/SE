@@ -29,7 +29,7 @@ type DeleteRet struct {
 	Msg     string
 }
 
-type DataRet struct {
+type SelfDataRet struct {
 	UserName string
 	Password string
 	Avatar   string
@@ -173,11 +173,11 @@ func DeteleUser(userName string) DeleteRet {
 	}
 }
 
-func GetSelfInfo(userName string) DataRet {
+func GetSelfInfo(userName string) SelfDataRet {
 	stmt, err := DB.Prepare("select * from User where userName = ?")
 	if err != nil {
 		fmt.Println(err)
-		return DataRet{
+		return SelfDataRet{
 			Msg: "select process err",
 		}
 	}
@@ -195,7 +195,7 @@ func GetSelfInfo(userName string) DataRet {
 		);
 	*/
 	err = row.Scan(&str1, &str2, &str3, &str4, &str5)
-	return DataRet{
+	return SelfDataRet{
 		UserName: str1,
 		Password: str2,
 		Avatar:   str5,
@@ -247,4 +247,40 @@ func RegisterAdmin(userName string, password string) RegisterRet {
 	}
 
 	return RegisterRet{Success: true}
+}
+
+type AllDataRet struct {
+	Data [][3]string
+	Msg  string
+}
+
+func GetAllUser() AllDataRet {
+	stmt, err := DB.Prepare("select userName,password from User")
+	if err != nil {
+		fmt.Println(err)
+		return AllDataRet{Msg: "database err"}
+	}
+
+	rows, err := stmt.Query()
+	if err != nil {
+		fmt.Println(err)
+		return AllDataRet{Msg: "select process err"}
+	}
+	defer rows.Close()
+
+	var data [][3]string
+
+	for rows.Next() {
+		var str1, str2 string
+		err = rows.Scan(&str1, &str2)
+		if err != nil {
+			fmt.Println(err)
+			return AllDataRet{Msg: "data get proceess err"}
+		}
+		data = append(data, [3]string{str1, str2, ""})
+	}
+
+	return AllDataRet{
+		Data: data,
+	}
 }

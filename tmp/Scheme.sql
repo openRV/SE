@@ -7,7 +7,7 @@ CREATE TABLE Doc(
     lastUpdate VARCHAR,
     docsType VARCHAR,
     viewCounts INTEGER,
-    open BOOL
+    open BOOLEAN
 );
 
 CREATE TABLE Dir(
@@ -20,7 +20,7 @@ CREATE TABLE Dir(
 
 CREATE TABLE Tree(
     dirId VARCHAR not NULL,
-    root bool not NULL,
+    root BOOLEAN not NULL,
     subType VARCHAR not NULL, -- dir | doc
     subId VARCHAR not NULL -- sub dir or sub doc id
 );
