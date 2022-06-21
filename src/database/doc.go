@@ -1,10 +1,24 @@
 package database
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 type DocSearchInfo struct {
 	Type    string // Title | Author
 	Content string
+}
+
+type SetVizInfoRet struct {
+	Success bool
+	Msg     string
+}
+
+type SetVisInfo struct {
+	Id       string
+	Username string
+	Vis      string
 }
 
 type Doc struct {
@@ -16,6 +30,18 @@ type Doc struct {
 	LastUpdate string
 	DocsType   string
 	ViewCounts int
+}
+
+type NewDocInfo struct {
+	FatherDirId string
+	DocName     string
+	Username    string
+}
+
+type NewDocRes struct {
+	Success bool
+	Msg     string
+	Id      string
 }
 
 // returned string -> error msg, nil for success
@@ -167,4 +193,29 @@ func GetAllDocSize() int {
 	}
 
 	return ret
+}
+
+func SetVisibility(info SetVisInfo) SetVizInfoRet {
+
+	stmt, err := DB.Prepare(`
+				update 
+				Doc Doc
+				set open = ?
+				where docsId = ? AND author = ?
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return SetVizInfoRet{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(info.Vis == "public", info.Id, info.Username)
+
+	if err != nil {
+		fmt.Println(err)
+		return SetVizInfoRet{Success: false, Msg: "database error"}
+	}
+
+	return SetVizInfoRet{Success: true}
+
 }

@@ -30,6 +30,7 @@ func MainRouter(router *gin.Engine) {
 	user.GET("/userdir", userPackageDesktop.UserDir)
 	user.POST("/newdir", userPackageDesktop.NewDir)
 	user.POST("/newfile", userPackageDesktop.NewDoc)
+	user.POST("/setvisibility", userPackageDesktop.SetVisibility)
 
 	// 需要验证 Token 的部分，在验证token以后可以按照如下方法获取 username password role
 	admin.POST("/test", func(c *gin.Context) {
