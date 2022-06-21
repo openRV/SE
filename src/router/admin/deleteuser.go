@@ -8,6 +8,7 @@ import (
 	"net/http"
 )
 
+//TODO:Debug need
 func DeleteUser(c *gin.Context) {
 
 	json := make(map[string]interface{})
