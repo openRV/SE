@@ -18,7 +18,7 @@
 1            /deleteitem
             /dircontent
             /downloadlog
-            /emptytrash
+1            /emptytrash
             /importfile
             /lastview
 1            /movedir

@@ -36,6 +36,7 @@ CREATE TABLE Trash(
     itemType VARCHAR , -- dir | doc
     itemId VARCHAR,
     owner VARCHAR,
+    deleteDate VARCHAR,
     PRIMARY KEY(itemType, itemId)
 );
 

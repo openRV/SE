@@ -1,6 +1,9 @@
 package database
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 type DeleteItemInfo struct {
 	Username string
@@ -35,12 +38,12 @@ func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 	stmt.QueryRow(info.Id).Scan(&subType)
 
 	// insert into trash
-	stmt, err = DB.Prepare("insert into Trash(itemType , itemId , owner) values (?,?,?)")
+	stmt, err = DB.Prepare("insert into Trash(itemType , itemId , owner , deleteDate) values (?,?,?,?)")
 	if err != nil {
 		fmt.Println(err)
 		return DeleteItemRes{Success: false, Msg: "database error"}
 	}
-	_, err = stmt.Exec(subType, info.Id, info.Username)
+	_, err = stmt.Exec(subType, info.Id, info.Username, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		fmt.Println(err)
 		return DeleteItemRes{Success: false, Msg: "database error"}
