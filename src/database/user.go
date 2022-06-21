@@ -1,6 +1,7 @@
 package database
 
 import (
+	"SE/src/Interface/admin/index"
 	"fmt"
 	"time"
 )
@@ -33,6 +34,11 @@ type DataRet struct {
 	Password string
 	Avatar   string
 	Msg      string
+}
+
+type UpdateRet struct {
+	Success bool
+	Msg     string
 }
 
 func SearchUser(user User) UserSearchRet {
@@ -68,7 +74,28 @@ func SearchUser(user User) UserSearchRet {
 
 func RegisterUser(user User) RegisterRet {
 
-	stmt, err := DB.Prepare("select exists (select * from User where userName = ? limit 1)")
+	//	stmt, err := tx.Prepare("insert into foo(id, name) values (?,?)")
+	//	if err != nil {
+	//		fmt.Println(err)
+	//		return
+	//	}
+	//	defer stmt.Close()
+	//
+
+	//	for i := 0; i < 100; i++ {
+	//		_, err = stmt.Exec(i, fmt.Sprintf("Hello world %03d", i))
+	//		if err != nil {
+	//			fmt.Println(err)
+	//			return
+	//		}
+	//	}
+	//	err = tx.Commit()
+	//	if err != nil {
+	//		fmt.Println(err)
+	//		return
+	//	}
+
+	stmt, err := DB.Prepare("select * from User where userName = ?")
 	if err != nil {
 		fmt.Println(err)
 		return RegisterRet{
@@ -78,17 +105,9 @@ func RegisterUser(user User) RegisterRet {
 	}
 	defer stmt.Close()
 
-	var num int
-	err = stmt.QueryRow(user.Username).Scan(&num)
-	if err != nil {
+	err = stmt.QueryRow(user.Username).Scan(nil)
+	if err == nil {
 		fmt.Println(err)
-		return RegisterRet{
-			Success: false,
-			Msg:     "database error",
-		}
-	}
-
-	if num != 0 {
 		return RegisterRet{
 			Success: false,
 			Msg:     "username already been used",
@@ -180,5 +199,22 @@ func GetSelfInfo(userName string) DataRet {
 		UserName: str1,
 		Password: str2,
 		Avatar:   str5,
+	}
+}
+
+func UpadateInfo(oldUserName string, params index.SetInfoParams) UpdateRet {
+	stmt, err := DB.Prepare("update User set username = ?,password = ?,avatar = ? where userName = ?")
+	if err != nil {
+		fmt.Println(err)
+		return UpdateRet{
+			Success: false,
+			Msg:     "update process err",
+		}
+	}
+	defer stmt.Close()
+
+	_ = stmt.QueryRow(params.UserName, params.Password, params.Avatar, oldUserName)
+	return UpdateRet{
+		Success: true,
 	}
 }
