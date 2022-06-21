@@ -54,6 +54,17 @@ type MoveDocRet struct {
 	Msg     string
 }
 
+type RenameInfo struct {
+	Id       string
+	Newname  string
+	Username string
+}
+
+type RenameRet struct {
+	Success bool
+	Msg     string
+}
+
 // returned string -> error msg, nil for success
 func OpenSearch(search DocSearchInfo) ([]Doc, string) {
 
@@ -252,4 +263,27 @@ func MoveDoc(info MoveDocInfo) MoveDocRet {
 
 	return MoveDocRet{Success: true}
 
+}
+
+func Rename(info RenameInfo) RenameRet {
+	stmt, err := DB.Prepare(`
+				update 
+				Doc
+				set docsName = ?
+				where docsId = ? AND author = ? 
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return RenameRet{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(info.Newname, info.Id, info.Username)
+
+	if err != nil {
+		fmt.Println(err)
+		return RenameRet{Success: false, Msg: "database error"}
+	}
+
+	return RenameRet{Success: true}
 }

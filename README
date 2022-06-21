@@ -15,7 +15,7 @@
 | string key | string | string |
 
 /user/desktop
-            /deleteitem
+1            /deleteitem
             /dircontent
             /downloadlog
             /emptytrash
@@ -32,7 +32,7 @@
             /usersearch
 /user/edit
             /downloadfile
-            /rename
+ 1           /rename
 /open   
 1        /hotdocs                   
 1        /login
