@@ -33,6 +33,17 @@ type NewDirRes struct {
 	Msg     string
 }
 
+type MoveDirInfo struct {
+	Id       string
+	MoveTo   string
+	Username string
+}
+
+type MoveDirRet struct {
+	Success bool
+	Msg     string
+}
+
 func UserDir(id string, root bool) UserDirRet {
 
 	var result UserDirRet
@@ -208,4 +219,28 @@ func uniqString() string {
 		uniqId += character
 	}
 	return uniqId
+}
+
+func MoveDir(info MoveDirInfo) MoveDirRet {
+	stmt, err := DB.Prepare(`
+				update 
+				Tree
+				set dirId = ? , root = ?
+				where subId = ? AND subType = ? 
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return MoveDirRet{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(info.MoveTo, info.MoveTo == info.Username, info.Id, "dir")
+
+	if err != nil {
+		fmt.Println(err)
+		return MoveDirRet{Success: false, Msg: "database error"}
+	}
+
+	return MoveDirRet{Success: true}
+
 }

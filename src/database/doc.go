@@ -43,6 +43,16 @@ type NewDocRes struct {
 	Msg     string
 	Id      string
 }
+type MoveDocInfo struct {
+	Id       string
+	MoveTo   string
+	Username string
+}
+
+type MoveDocRet struct {
+	Success bool
+	Msg     string
+}
 
 // returned string -> error msg, nil for success
 func OpenSearch(search DocSearchInfo) ([]Doc, string) {
@@ -199,7 +209,7 @@ func SetVisibility(info SetVisInfo) SetVizInfoRet {
 
 	stmt, err := DB.Prepare(`
 				update 
-				Doc Doc
+				Doc
 				set open = ?
 				where docsId = ? AND author = ?
 			`)
@@ -217,5 +227,29 @@ func SetVisibility(info SetVisInfo) SetVizInfoRet {
 	}
 
 	return SetVizInfoRet{Success: true}
+
+}
+
+func MoveDoc(info MoveDocInfo) MoveDocRet {
+	stmt, err := DB.Prepare(`
+				update 
+				Tree
+				set dirId = ? , root = ?
+				where subId = ? AND subType = ? 
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return MoveDocRet{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(info.MoveTo, info.MoveTo == info.Username, info.Id, "doc")
+
+	if err != nil {
+		fmt.Println(err)
+		return MoveDocRet{Success: false, Msg: "database error"}
+	}
+
+	return MoveDocRet{Success: true}
 
 }

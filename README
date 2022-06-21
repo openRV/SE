@@ -13,3 +13,36 @@
 | username | password | avatar |
 | --- | --- | --- |
 | string key | string | string |
+
+/user/desktop
+            /deleteitem
+            /dircontent
+            /downloadlog
+            /emptytrash
+            /importfile
+            /lastview
+1            /movedir
+1            /movefile
+1            /newdir
+1            /newfile
+1            /setvisibility
+            /sharewithme
+            /trash
+0.5            /userdir
+            /usersearch
+/user/edit
+            /downloadfile
+            /rename
+/open   
+1        /hotdocs                   
+1        /login
+1        /opensearch
+1        /register
+/admin
+        /deleteuser
+        /newadmin
+        /setinfo
+        /selfinfo
+        /storageinfo
+        /userinfo
+        /userlist
