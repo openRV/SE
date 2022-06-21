@@ -1,19 +1,19 @@
 package desktop
 
 // 移动
-// /user/movefile
+// /user/movedir
 // "POST"
 
-type MoveFileParams struct {
-	DocsId string `json:"docsId"` //
+type MoveDirParams struct {
+	DirId  string `json:"dirId"`  //
 	MoveTo string `json:"moveTo"` // a dir
 }
 
-type MoveFileResult struct {
+type MoveDirResult struct {
 	Success bool `json:"success"`
 }
 
-type MoveFile struct {
+type MoveDir struct {
 	Params MoveFileParams
 	Result MoveFileResult
 }
