@@ -1,6 +1,10 @@
 package database
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
 
 type Dir struct {
 	Id         string
@@ -18,6 +22,17 @@ type UserDirRet struct {
 	Msg     string
 }
 
+type NewDirInfo struct {
+	FatherDirId string
+	Name        string
+	Owner       string
+}
+
+type NewDirRes struct {
+	Success bool
+	Msg     string
+}
+
 func UserDir(id string, root bool) UserDirRet {
 
 	var result UserDirRet
@@ -25,24 +40,33 @@ func UserDir(id string, root bool) UserDirRet {
 
 	// fill in dir name
 
-	stmt := `
+	stmt, err := DB.Prepare(`
 				select dirName
-				from dir
+				from Dir
 				where dirId = ?
-			`
-	err := DB.QueryRow(stmt, id).Scan(&result.Name)
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return UserDirRet{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+	err = stmt.QueryRow(id).Scan(&result.Name)
 	if err != nil {
 		fmt.Println(err)
 		return UserDirRet{Success: false, Msg: "database error"}
 	}
 
 	// find sub dir Id from table Tree
-	stmt = `
+	stmt, err = DB.Prepare(`
 				select subId
 				from Tree
 				where dirId = ? AND root = ? AND subType = ?
-			`
-	rows, err := DB.Query(stmt, id, root, "dir")
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return UserDirRet{Success: false, Msg: "database error"}
+	}
+	rows, err := stmt.Query(id, root, "dir")
 	if err != nil {
 		fmt.Println(err)
 		return UserDirRet{Success: false, Msg: "database error"}
@@ -70,12 +94,16 @@ func UserDir(id string, root bool) UserDirRet {
 }
 
 func fillinSubDir(dir Dir) UserDirRet {
-	stmt := `
+	stmt, err := DB.Prepare(`
 				select subId
 				from Tree
 				where dirId = ? AND subType = ?
-			`
-	row, err := DB.Query(stmt, dir.Id)
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return UserDirRet{Success: false, Msg: "database error"}
+	}
+	row, err := stmt.Query(dir.Id)
 	if err != nil {
 		fmt.Println(err)
 		return UserDirRet{Success: false, Msg: "database error"}
@@ -100,15 +128,84 @@ func fillinSubDir(dir Dir) UserDirRet {
 }
 
 func fillinDirInfo(dir Dir) UserDirRet {
-	stmt := `
+	stmt, err := DB.Prepare(`
 				select dirName , owner , createDate , lastView
 				from Dir
 				where dirId = ?
-			`
-	err := DB.QueryRow(stmt, dir.Id).Scan(dir.Name, dir.Owner, dir.CreateDate, dir.LastView)
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return UserDirRet{Success: false, Msg: "database error"}
+	}
+	err = stmt.QueryRow(dir.Id).Scan(dir.Name, dir.Owner, dir.CreateDate, dir.LastView)
 	if err != nil {
 		fmt.Println(err)
 		return UserDirRet{Success: false, Msg: "database error"}
 	}
 	return UserDirRet{Success: true}
+}
+
+func NewDir(info NewDirInfo) NewDirRes {
+
+	// insert into Dir
+	dirId := uniqString()
+
+	isRoot := info.FatherDirId == info.Name
+
+	stmt, err := DB.Prepare(`
+				insert into 
+				Dir (dirId , dirName , owner , createDate , lastView) 
+				values
+				(? , ? , ? , ? , ?)
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return NewDirRes{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(dirId, info.Name, info.Owner, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
+
+	if err != nil {
+		fmt.Println(err)
+		return NewDirRes{Success: false, Msg: "database error"}
+	}
+
+	// insert into Tree
+	stmt, err = DB.Prepare(`
+				insert into 
+				Tree (dirId , root , subType , subId)
+				values
+				(? , ? , ? , ?)
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return NewDirRes{Success: false, Msg: "database error"}
+	}
+
+	_, err = stmt.Exec(info.FatherDirId, isRoot, "dir", dirId)
+	if err != nil {
+		fmt.Println(err)
+		return NewDirRes{Success: false, Msg: "database error"}
+	}
+
+	return NewDirRes{Success: true}
+
+}
+
+func uniqString() string {
+	rand.Seed(time.Now().UnixNano())
+	var uniqId string
+	for i := 0; i < 10; i++ {
+		rand1 := rand.Int63n(2)
+		var res int64
+		if rand1 == 0 {
+			res = 48 + rand.Int63n(10)
+		} else {
+			res = 97 + rand.Int63n(26)
+		}
+		character := fmt.Sprintf("%c", res)
+		uniqId += character
+	}
+	return uniqId
 }

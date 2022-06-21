@@ -15,11 +15,13 @@ func UserDir(c *gin.Context) {
 	username := c.Request.Header.Get("Username")
 	if username == "" {
 		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: "empty username"})
+		return
 	}
 
 	dir := database.UserDir(username, true)
 	if !dir.Success {
 		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: dir.Msg})
+		return
 	}
 
 	var resDir desktop.Dir
