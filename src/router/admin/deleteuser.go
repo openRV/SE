@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func DeleteUserour(c *gin.Context) {
+func DeleteUser(c *gin.Context) {
 
 	json := make(map[string]interface{})
 	c.BindJSON(&json)
