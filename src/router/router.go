@@ -24,6 +24,7 @@ func MainRouter(router *gin.Engine) {
 	open.POST("/login", openPackage.Login)
 	open.POST("/register", openPackage.Register)
 	open.GET("/openSearch", openPackage.OpenSearch)
+	open.GET("/hotdocs", openPackage.HotOpenDocs)
 
 	// 需要验证 Token 的部分，在验证token以后可以按照如下方法获取 username password role
 	admin.POST("/test", func(c *gin.Context) {

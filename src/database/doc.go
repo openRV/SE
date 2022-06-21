@@ -73,17 +73,28 @@ func OpenSearch(search DocSearchInfo) ([]Doc, string) {
 
 }
 
-func Insert() {
-	stmt := `insert  
-				into Doc 
-				(docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts , open) 
-				values 
-				("docsId1" , "docsNameCLosed" , "author" , "createDate" , "lastUpdate" , "docsType" , 123 ,false)
-				`
+func HotOpenDocs() ([]Doc, string) {
 
-	_, err := DB.Exec(stmt)
+	var result []Doc
+
+	stmt := `select 
+				docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
+				from Doc where open = ?
+				order by viewCounts desc
+				`
+	rows, err := DB.Query(stmt, true)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return nil, "database error"
 	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var doc Doc
+		rows.Scan(&doc.DocsId, &doc.DocsName, &doc.Author, &doc.CreateDate, &doc.LastUpdate, &doc.DocsType, &doc.ViewCounts)
+		result = append(result, doc)
+	}
+
+	return result, ""
+
 }
