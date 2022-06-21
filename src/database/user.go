@@ -208,13 +208,43 @@ func UpadateInfo(oldUserName string, params index.SetInfoParams) UpdateRet {
 		fmt.Println(err)
 		return UpdateRet{
 			Success: false,
-			Msg:     "update process err",
+			Msg:     "database err",
 		}
 	}
 	defer stmt.Close()
 
-	_ = stmt.QueryRow(params.UserName, params.Password, params.Avatar, oldUserName)
+	_, err = stmt.Exec(params.UserName, params.Password, params.Avatar, oldUserName)
+	if err != nil {
+		fmt.Println(err)
+		return UpdateRet{
+			Success: false,
+			Msg:     "update process err",
+		}
+	}
 	return UpdateRet{
 		Success: true,
 	}
+}
+
+func RegisterAdmin(userName string, password string) RegisterRet {
+	stmt, err := DB.Prepare("insert into User(userName , password , registDate , role , avatar) values (?,?,?,'Admin',?)")
+	if err != nil {
+		fmt.Println(err)
+		return RegisterRet{
+			Success: false,
+			Msg:     "database  err",
+		}
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(userName, password, time.Now().Format("2006-01-02 15:04:05"), "https://ui-avatars.com/api/?name="+userName)
+	if err != nil {
+		fmt.Println(err)
+		return RegisterRet{
+			Success: false,
+			Msg:     "insert process err",
+		}
+	}
+
+	return RegisterRet{Success: true}
 }
