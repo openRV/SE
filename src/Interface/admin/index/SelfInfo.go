@@ -9,8 +9,8 @@ type SelfInfoParams struct {
 
 type SelfInfoResult struct {
 	Success bool `json:"success"`
-	Total   int  `json:"total"`
-	Data    struct {
+	//Total   int  `json:"total"`
+	Data struct {
 		UserName string `json:"userName"`
 		Password string `json:"password"`
 		Avatar   string `json:"avatar"`

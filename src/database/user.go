@@ -28,6 +28,13 @@ type DeleteRet struct {
 	Msg     string
 }
 
+type DataRet struct {
+	UserName string
+	Password string
+	Avatar   string
+	Msg      string
+}
+
 func SearchUser(user User) UserSearchRet {
 
 	stmt, err := DB.Prepare("select password , registDate , role , avatar from User where userName = ?")
@@ -136,6 +143,7 @@ func DeteleUser(userName string) DeleteRet {
 	_, err = stmt.Exec(userName)
 
 	if err != nil {
+		fmt.Println(err)
 		return DeleteRet{
 			Success: false,
 			Msg:     "delete process error",
@@ -143,5 +151,34 @@ func DeteleUser(userName string) DeleteRet {
 	}
 	return DeleteRet{
 		Success: true,
+	}
+}
+
+func GetSelfInfo(userName string) DataRet {
+	stmt, err := DB.Prepare("select * from User where userName = ?")
+	if err != nil {
+		fmt.Println(err)
+		return DataRet{
+			Msg: "select process err",
+		}
+	}
+	defer stmt.Close()
+
+	row := stmt.QueryRow(userName)
+	var str1, str2, str3, str4, str5 string
+	/*
+		CREATE TABLE User(
+		    userName VARCHAR not NULL PRIMARY KEY,
+		    password VARCHAR not NULL,
+		    registDate VARCHAR,
+		    role CHAR(5),--区分管理员与普通用户
+		    avatar VARCHAR
+		);
+	*/
+	err = row.Scan(&str1, &str2, &str3, &str4, &str5)
+	return DataRet{
+		UserName: str1,
+		Password: str2,
+		Avatar:   str5,
 	}
 }
