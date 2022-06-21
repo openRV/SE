@@ -21,9 +21,24 @@ func UserList(c *gin.Context) {
 	var res index.UserListResult
 	res.Total = len(ret.Data)
 	if curPage*pageSize > len(ret.Data) {
-		res.Data = ret.Data[(curPage-1)*pageSize:]
+		for _, x := range ret.Data[(curPage-1)*pageSize:] {
+			data := index.UserListData{
+				UserName: x[0],
+				Password: x[1],
+				Storage:  x[2],
+			}
+			res.Data = append(res.Data, data)
+		}
+
 	} else {
-		res.Data = ret.Data[(curPage-1)*pageSize : curPage*pageSize]
+		for _, x := range ret.Data[(curPage-1)*pageSize : curPage*pageSize] {
+			data := index.UserListData{
+				UserName: x[0],
+				Password: x[1],
+				Storage:  x[2],
+			}
+			res.Data = append(res.Data, data)
+		}
 	}
 
 	c.IndentedJSON(http.StatusOK, res)
