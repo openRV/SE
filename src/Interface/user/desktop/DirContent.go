@@ -10,13 +10,15 @@ type DirContentParams struct {
 	PageSize int    `json:"pageSize"` // 文件夹与文件一样占一行
 }
 
+type DirContentData struct {
+	Dir  DirListItem  `json:"dir"`
+	Docs DocsListItem `json:"docs"`
+}
+
 type DirContentResult struct {
-	Success bool `json:"success"`
-	Total   int  `json:"total"`
-	Data    []struct {
-		Dir  DirListItem  `json:"dir"`
-		Docs DocsListItem `json:"docs"`
-	} `json:"data"`
+	Success bool             `json:"success"`
+	Total   int              `json:"total"`
+	Data    []DirContentData `json:"data"`
 }
 
 type DirContent struct {

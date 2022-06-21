@@ -11,12 +11,32 @@ CREATE TABLE Doc(
 );
 
 CREATE TABLE Dir(
-    dirId INTEGER not NULL PRIMARY KEY,
+    dirId VARCHAR not NULL PRIMARY KEY,
     dirName VARCHAR not NULL,
-    owner integer,
-    lastView VARCHAR,
+    owner VARCHAR not NULL,
     createDate VARCHAR,
-    subDir INTEGER
+    lastView VARCHAR
+);
+
+CREATE TABLE Tree(
+    dirId VARCHAR not NULL,
+    root bool not NULL,
+    subType VARCHAR not NULL, -- dir | doc
+    subId VARCHAR not NULL -- sub dir or sub doc id
+);
+
+CREATE TABLE History(
+    userName VARCHAR not NULL,
+    operator VARCHAR not NULL, -- delete | view | download | move
+    opetatorType VARCHAR not NULL, -- dir | doc
+    itemId VARCHAR not NULL
+);
+
+CREATE TABLE Trash(
+    itemType VARCHAR , -- dir | doc
+    itemId VARCHAR,
+    owner VARCHAR,
+    PRIMARY KEY(itemType, itemId)
 );
 
 CREATE TABLE User(
