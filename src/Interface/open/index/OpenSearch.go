@@ -12,19 +12,19 @@ type OpenSearchParams struct {
 	PageSize      int    `json:"pageSize"`   // default 15
 }
 
-type OpenSearchResult[T int | string] struct {
+type OpenSearchResult struct {
 	Success bool `json:"success"`
 	Total   int  `json:"total"` // 总共的数量
 	Data    []struct {
 		DocsId     string `json:"docsId"` // docs key
 		DocsName   string `json:"docsName"`
 		Author     string `json:"author"`
-		LastUpdata string `json:"lastUpdate"` // yyyy-mm-dd
-		ViewCounts T      `json:"viewCounts"` // TODO
+		LastUpdate string `json:"lastUpdate"` // yyyy-mm-dd
+		ViewCounts int    `json:"viewCounts"`
 	} `json:"data"`
 }
 
 type OpenSearch struct {
 	Params OpenSearchParams
-	Result OpenSearchResult[int] // TODO
+	Result OpenSearchResult
 }

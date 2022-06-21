@@ -1,17 +1,15 @@
-CREATE TABLE Doc
-(
+CREATE TABLE Doc(
     docsId INTEGER not NULL PRIMARY KEY,
     docsName VARCHAR not NULL,
-    --docsFile ,
+    docsFile blob,
     author VARCHAR,
     createDate VARCHAR,
-    lastView VARCHAR,
+    lastUpdate VARCHAR,
     docsType VARCHAR,
     viewCounts INTEGER
 );
 
-CREATE TABLE Dir
-(
+CREATE TABLE Dir(
     dirId INTEGER not NULL PRIMARY KEY,
     dirName VARCHAR not NULL,
     owner integer,

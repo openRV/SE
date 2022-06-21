@@ -61,28 +61,7 @@ func SearchUser(user User) UserSearchRet {
 
 func RegisterUser(user User) RegisterRet {
 
-	//	stmt, err := tx.Prepare("insert into foo(id, name) values (?,?)")
-	//	if err != nil {
-	//		fmt.Println(err)
-	//		return
-	//	}
-	//	defer stmt.Close()
-	//
-
-	//	for i := 0; i < 100; i++ {
-	//		_, err = stmt.Exec(i, fmt.Sprintf("Hello world %03d", i))
-	//		if err != nil {
-	//			fmt.Println(err)
-	//			return
-	//		}
-	//	}
-	//	err = tx.Commit()
-	//	if err != nil {
-	//		fmt.Println(err)
-	//		return
-	//	}
-
-	stmt, err := DB.Prepare("select * from User where userName = ?")
+	stmt, err := DB.Prepare("select exists (select * from User where userName = ? limit 1)")
 	if err != nil {
 		fmt.Println(err)
 		return RegisterRet{
@@ -92,9 +71,17 @@ func RegisterUser(user User) RegisterRet {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(user.Username).Scan(nil)
-	if err == nil {
+	var num int
+	err = stmt.QueryRow(user.Username).Scan(&num)
+	if err != nil {
 		fmt.Println(err)
+		return RegisterRet{
+			Success: false,
+			Msg:     "database error",
+		}
+	}
+
+	if num != 0 {
 		return RegisterRet{
 			Success: false,
 			Msg:     "username already been used",
