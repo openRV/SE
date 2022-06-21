@@ -99,6 +99,52 @@ func HotOpenDocs() ([]Doc, string) {
 
 }
 
+func NewDoc(info NewDocInfo) NewDocRes {
+
+	// insert into Dir
+	docId := uniqString()
+	isRoot := info.FatherDirId == info.Username
+
+	stmt, err := DB.Prepare(`
+				insert into
+				Doc (docsId ,docsName , author , createDate , lastUpdate , viewCounts , open)
+				values
+				(? , ? , ? , ? , ? , ? , ?)
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return NewDocRes{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(docId, info.DocName, info.Username, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"), 0, false)
+
+	if err != nil {
+		fmt.Println(err)
+		return NewDocRes{Success: false, Msg: "database error"}
+	}
+
+	// insert into Tree
+	stmt, err = DB.Prepare(`
+				insert into
+				Tree (dirId , root , subType , subId)
+				values
+				(? , ? , ? , ?)
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return NewDocRes{Success: false, Msg: "database error"}
+	}
+
+	_, err = stmt.Exec(info.FatherDirId, isRoot, "doc", docId)
+	if err != nil {
+		fmt.Println(err)
+		return NewDocRes{Success: false, Msg: "database error"}
+	}
+
+	return NewDocRes{Success: true, Id: docId}
+}
+
 func GetAllDocSize() int {
 	var ret int
 	stmt, err := DB.Prepare("select docFile From Doc")
