@@ -98,3 +98,27 @@ func HotOpenDocs() ([]Doc, string) {
 	return result, ""
 
 }
+
+func GetAllDocSize() int {
+	var ret int
+	stmt, err := DB.Prepare("select docFile From Doc")
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		fmt.Println(err)
+		return -1
+	}
+
+	for rows.Next() {
+		var file []byte
+		rows.Scan(&file)
+		ret += len(file)
+	}
+
+	return ret
+}
