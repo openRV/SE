@@ -23,6 +23,11 @@ type RegisterRet struct {
 	Msg     string
 }
 
+type DeleteRet struct {
+	Success bool
+	Msg     string
+}
+
 func SearchUser(user User) UserSearchRet {
 
 	stmt, err := DB.Prepare("select password , registDate , role , avatar from User where userName = ?")
@@ -118,4 +123,38 @@ func RegisterUser(user User) RegisterRet {
 		Success: true,
 	}
 
+}
+
+func DeteleUser(userName string) DeleteRet {
+	stmt, err := DB.Prepare("select * from User where userName = ?")
+	if err != nil {
+		fmt.Println(err)
+		return DeleteRet{
+			Success: false,
+			Msg:     "database error",
+		}
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(userName).Scan(nil)
+	if err != nil {
+		fmt.Println(err)
+		return DeleteRet{
+			Success: false,
+			Msg:     "There is not the user",
+		}
+	}
+
+	stmt, err = DB.Prepare("delete from User where userName = ?")
+	_, err = stmt.Exec(userName)
+
+	if err != nil {
+		return DeleteRet{
+			Success: false,
+			Msg:     "delete process error",
+		}
+	}
+	return DeleteRet{
+		Success: true,
+	}
 }
