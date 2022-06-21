@@ -29,9 +29,10 @@ func OpenSearch(search DocSearchInfo) ([]Doc, string) {
 				docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
 				from 
 				Doc where 
-				author like "%?%"
+				author like ?
+				AND open = ?
 				`
-		rows, err := DB.Query(stmt, search.Content)
+		rows, err := DB.Query(stmt, fmt.Sprintf("%%%s%%", search.Content), true)
 		if err != nil {
 			fmt.Println(err)
 			return nil, "database error"
@@ -51,9 +52,10 @@ func OpenSearch(search DocSearchInfo) ([]Doc, string) {
 				docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
 				from Doc 
 				where 
-				docsName like "%?%"
+				docsName like ?
+				AND open = ?
 				`
-		rows, err := DB.Query(stmt, search.Content)
+		rows, err := DB.Query(stmt, fmt.Sprintf("%%%s%%", search.Content), true)
 		if err != nil {
 			fmt.Println(err)
 			return nil, "database error"
@@ -69,4 +71,19 @@ func OpenSearch(search DocSearchInfo) ([]Doc, string) {
 
 	}
 
+}
+
+func Insert() {
+	stmt := `insert  
+				into Doc 
+				(docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts , open) 
+				values 
+				("docsId1" , "docsNameCLosed" , "author" , "createDate" , "lastUpdate" , "docsType" , 123 ,false)
+				`
+
+	_, err := DB.Exec(stmt)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }

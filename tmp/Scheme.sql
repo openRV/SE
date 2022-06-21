@@ -1,12 +1,13 @@
 CREATE TABLE Doc(
-    docsId INTEGER not NULL PRIMARY KEY,
+    docsId VARCHAR not NULL PRIMARY KEY,
     docsName VARCHAR not NULL,
     docsFile blob,
     author VARCHAR,
     createDate VARCHAR,
     lastUpdate VARCHAR,
     docsType VARCHAR,
-    viewCounts INTEGER
+    viewCounts INTEGER,
+    open BOOL
 );
 
 CREATE TABLE Dir(

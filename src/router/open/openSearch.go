@@ -56,13 +56,13 @@ func OpenSearch(c *gin.Context) {
 	result.Success = true
 	for i := from; i < to; i++ {
 		doc := docs[i]
-		var docStruct index.OpenSearchResult
-		docStruct.Data[0].DocsId = doc.DocsId
-		docStruct.Data[0].DocsName = doc.DocsName
-		docStruct.Data[0].Author = doc.Author
-		docStruct.Data[0].LastUpdate = doc.LastUpdate
-		docStruct.Data[0].ViewCounts = doc.ViewCounts
-		result.Data = append(result.Data, docStruct.Data[0])
+		var docData index.OpenSearchData
+		docData.DocsId = doc.DocsId
+		docData.DocsName = doc.DocsName
+		docData.Author = doc.Author
+		docData.LastUpdate = doc.LastUpdate
+		docData.ViewCounts = doc.ViewCounts
+		result.Data = append(result.Data, docData)
 	}
 
 	c.IndentedJSON(http.StatusOK, result)

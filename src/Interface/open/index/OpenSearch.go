@@ -15,13 +15,16 @@ type OpenSearchParams struct {
 type OpenSearchResult struct {
 	Success bool `json:"success"`
 	Total   int  `json:"total"` // 总共的数量
-	Data    []struct {
+	Data    []OpenSearchData `json:"data"`
+}
+
+type OpenSearchData struct {
 		DocsId     string `json:"docsId"` // docs key
 		DocsName   string `json:"docsName"`
 		Author     string `json:"author"`
 		LastUpdate string `json:"lastUpdate"` // yyyy-mm-dd
 		ViewCounts int    `json:"viewCounts"`
-	} `json:"data"`
+
 }
 
 type OpenSearch struct {
