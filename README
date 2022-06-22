@@ -33,6 +33,8 @@
 /user/edit
             /downloadfile
  1           /rename
+ 1          /readcontent
+ 1          /writecontent
 /open   
 1        /hotdocs                   
 1        /login
