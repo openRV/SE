@@ -39,10 +39,10 @@
 1        /opensearch
 1        /register
 /admin
-        /deleteuser
-        /newadmin
-        /setinfo
-        /selfinfo
-        /storageinfo
-        /userinfo
+1        /deleteuser
+1        /newadmin
+1        /setinfo
+1        /selfinfo
+1        /storageinfo
+1        /userinfo
         /userlist
