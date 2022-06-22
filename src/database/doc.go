@@ -88,7 +88,7 @@ func OpenSearch(search OpenDocSearchInfo) ([]Doc, string) {
 		flag = 2
 	}
 	switch flag {
-	case 0:
+	case 1:
 		{
 			stmt := `select 
 					docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
@@ -111,7 +111,7 @@ func OpenSearch(search OpenDocSearchInfo) ([]Doc, string) {
 
 			// return result, ""
 		}
-	case 1:
+	case 0:
 		{
 			stmt := `select 
 					docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
