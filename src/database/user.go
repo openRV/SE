@@ -74,27 +74,6 @@ func SearchUser(user User) UserSearchRet {
 
 func RegisterUser(user User) RegisterRet {
 
-	//	stmt, err := tx.Prepare("insert into foo(id, name) values (?,?)")
-	//	if err != nil {
-	//		fmt.Println(err)
-	//		return
-	//	}
-	//	defer stmt.Close()
-	//
-
-	//	for i := 0; i < 100; i++ {
-	//		_, err = stmt.Exec(i, fmt.Sprintf("Hello world %03d", i))
-	//		if err != nil {
-	//			fmt.Println(err)
-	//			return
-	//		}
-	//	}
-	//	err = tx.Commit()
-	//	if err != nil {
-	//		fmt.Println(err)
-	//		return
-	//	}
-
 	stmt, err := DB.Prepare("select * from User where userName = ?")
 	if err != nil {
 		fmt.Println(err)
@@ -132,6 +111,24 @@ func RegisterUser(user User) RegisterRet {
 			Msg:     "insert process error",
 		}
 	}
+
+	stmt, err = DB.Prepare("insert into Dir(dirId , dirName , owner , createDate , lastView ) values (?,?,?,?,?)")
+	if err != nil {
+		fmt.Println(err)
+		return RegisterRet{
+			Success: false,
+			Msg:     "database error",
+		}
+	}
+	_, err = stmt.Exec(user.Username, user.Username, user.Username, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
+	if err != nil {
+		fmt.Println(err)
+		return RegisterRet{
+			Success: false,
+			Msg:     "insert process error",
+		}
+	}
+
 	return RegisterRet{
 		Success: true,
 	}

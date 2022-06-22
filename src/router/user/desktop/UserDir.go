@@ -28,7 +28,7 @@ func UserDir(c *gin.Context) {
 
 	resDir.DirId = username
 	resDir.DirName = dir.Name
-	fillinDir(dir.Data, resDir.Subdir)
+	resDir.Subdir = fillinDir(dir.Data)
 
 	res := []desktop.Dir{resDir}
 
@@ -36,17 +36,20 @@ func UserDir(c *gin.Context) {
 
 }
 
-func fillinDir(dir []database.Dir, resDir []desktop.Dir) {
+func fillinDir(dir []database.Dir) []desktop.Dir {
+
+	var resDir []desktop.Dir
 	if len(dir) == 0 {
-		return
+		return nil
 	}
 	var newDir desktop.Dir
 	for i := 0; i < len(dir); i = i + 1 {
 		newDir.DirId = dir[i].Id
 		newDir.DirName = dir[i].Name
-		fillinDir(dir[i].Subdir, newDir.Subdir)
+		newDir.Subdir = fillinDir(dir[i].Subdir)
 		resDir = append(resDir, newDir)
 	}
+	return resDir
 }
 
 //// 文件树

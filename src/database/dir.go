@@ -73,28 +73,29 @@ type ImportFileRes struct {
 func UserDir(id string, root bool) UserDirRet {
 
 	var result UserDirRet
-	result.Success = true
 
 	// fill in dir name
 
-	stmt, err := DB.Prepare(`
-				select dirName
-				from Dir
-				where dirId = ?
-			`)
-	if err != nil {
-		fmt.Println(err)
-		return UserDirRet{Success: false, Msg: "database error"}
-	}
-	defer stmt.Close()
-	err = stmt.QueryRow(id).Scan(&result.Name)
-	if err != nil {
-		fmt.Println(err)
-		return UserDirRet{Success: false, Msg: "database error"}
-	}
+	//stmt, err := DB.Prepare(`
+	//			select dirName
+	//			from Dir
+	//			where dirId = ?
+	//		`)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return UserDirRet{Success: false, Msg: "database error"}
+	//}
+	//defer stmt.Close()
+	//err = stmt.QueryRow(id).Scan(&result.Name)
+	//if err != nil {
+	//	fmt.Println(err)
+	//	return UserDirRet{Success: false, Msg: "database error"}
+	//}
+
+	result.Name = id
 
 	// find sub dir Id from table Tree
-	stmt, err = DB.Prepare(`
+	stmt, err := DB.Prepare(`
 				select subId
 				from Tree
 				where dirId = ? AND root = ? AND subType = ?
@@ -110,6 +111,7 @@ func UserDir(id string, root bool) UserDirRet {
 	}
 	defer rows.Close()
 
+	result.Data = append(result.Data, Dir{Id: id, Name: id})
 	for rows.Next() {
 		var dir Dir
 		err = rows.Scan(&dir.Id)
@@ -123,9 +125,10 @@ func UserDir(id string, root bool) UserDirRet {
 		// fill in subdir
 		fillinSubDir(dir)
 
-		result.Data = append(result.Data, dir)
+		result.Data[0].Subdir = append(result.Data[0].Subdir, dir)
 	}
 
+	result.Success = true
 	return result
 
 }
