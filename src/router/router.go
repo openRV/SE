@@ -41,6 +41,8 @@ func MainRouter(router *gin.Engine) {
 	user.GET("/dircontent", userPackageDesktop.DirContent)
 	user.GET("/lastview", userPackageDesktop.LastView)
 
+	user.POST("/importfile", userPackageDesktop.ImportFile)
+
 	admin.GET("/userlist", adminPackage.UserList)
 	admin.DELETE("/deleteuser", adminPackage.DeleteUser)
 	admin.GET("/selfInfo", adminPackage.SetInfo)
