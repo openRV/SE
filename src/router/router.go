@@ -37,6 +37,9 @@ func MainRouter(router *gin.Engine) {
 	user.POST("/movefile", userPackageDesktop.MoveDoc)
 	user.POST("/rename", userPackageEdit.Rename)
 	user.POST("/deleteitem", userPackageDesktop.DeleteItem)
+	user.GET("/trash", userPackageDesktop.Trash)
+	user.GET("/dircontent", userPackageDesktop.DirContent)
+	user.GET("/lastview", userPackageDesktop.LastView)
 
 	admin.GET("/userlist", adminPackage.UserList)
 	admin.DELETE("/deleteuser", adminPackage.DeleteUser)

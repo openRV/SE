@@ -70,6 +70,16 @@ type RenameRet struct {
 	Msg     string
 }
 
+type LastViewInfo struct {
+	Username string
+}
+
+type LastViewRes struct {
+	Success bool
+	Msg     string
+	Data    []Doc
+}
+
 // returned string -> error msg, nil for success
 func OpenSearch(search OpenDocSearchInfo) ([]Doc, string) {
 
@@ -327,4 +337,41 @@ func Rename(info RenameInfo) RenameRet {
 	}
 
 	return RenameRet{Success: true}
+}
+
+func LastView(info LastViewInfo) LastViewRes {
+	stmt, err := DB.Prepare(`
+				select docsId , docsName , createDate , docsType , viewCounts , lastUpdate
+				from Doc 
+				where author = ?
+				order by lastUpdate desc
+			`)
+	if err != nil {
+		fmt.Println(err)
+		return LastViewRes{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(info.Username)
+
+	if err != nil {
+		fmt.Println(err)
+		return LastViewRes{Success: false, Msg: "database error"}
+	}
+	var result LastViewRes
+	for rows.Next() {
+		var doc Doc
+		err = rows.Scan(&doc.DocsId, &doc.DocsName, &doc.CreateDate, &doc.DocsType, &doc.ViewCounts, &doc.LastUpdate)
+		if err != nil {
+			fmt.Println(err)
+			return LastViewRes{Success: false, Msg: "database error"}
+
+		}
+		doc.Author = info.Username
+		result.Data = append(result.Data, doc)
+	}
+
+	result.Success = true
+	return result
+
 }
