@@ -38,6 +38,6 @@ func UserList(c *gin.Context) {
 			res.Data = append(res.Data, data)
 		}
 	}
-
+	res.Success = true
 	c.IndentedJSON(http.StatusOK, res)
 }
