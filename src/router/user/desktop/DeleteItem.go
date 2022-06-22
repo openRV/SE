@@ -15,7 +15,7 @@ func DeleteItem(c *gin.Context) {
 	c.BindJSON(&json)
 
 	docsId := json["docsId"].(string)
-	isDir := json["isDir"].(string) == "true"
+	isDir := json["isDir"].(bool)
 	username := c.Request.Header.Get("Username")
 
 	var info database.DeleteItemInfo

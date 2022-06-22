@@ -45,9 +45,12 @@ type TrashRes struct {
 func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 
 	// get item's type doc or dir
-	subType := info.IsDir
+	subType := "doc"
+	if info.IsDir {
+		subType = "dir"
+	}
 
-	if !subType {
+	if subType == "doc" {
 		// insert into trash
 		stmt, err := DB.Prepare("insert into Trash(itemType , itemId , owner , deleteDate) values (?,?,?,?)")
 		if err != nil {

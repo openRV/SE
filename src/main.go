@@ -10,9 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//	"net/http"
-//
-
 func main() {
 
 	// init system
@@ -29,6 +26,7 @@ func main() {
 	router.Use(middleware.RateLimit(time.Second, int64(conf.Server.Capcity), int64(conf.Server.Quantum)))
 	router.Use(middleware.Logger(logFile))
 
+	// start server
 	Router.MainRouter(router)
 
 }

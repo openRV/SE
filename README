@@ -10,10 +10,6 @@
 
 ### User
 
-| username | password | avatar |
-| --- | --- | --- |
-| string key | string | string |
-
 /user/desktop
 1            /deleteitem
 1            /dircontent
