@@ -93,6 +93,28 @@ type UserSearchRes struct {
 	Data    []Doc
 }
 
+type DocsContentInfo struct {
+	Username string
+	Id       string
+}
+
+type DocsContentRes struct {
+	Success bool
+	Msg     string
+	Data    string
+}
+
+type WriteDocsInfo struct {
+	Id       string
+	Username string
+	Content  string
+}
+
+type WriteDocsRes struct {
+	Success bool
+	Msg     string
+}
+
 // returned string -> error msg, nil for success
 func OpenSearch(search OpenDocSearchInfo) ([]Doc, string) {
 
@@ -473,4 +495,44 @@ func UserSearch(info UserSearchInfo) UserSearchRes {
 	result.Success = true
 	return result
 
+}
+
+func DocsContent(info DocsContentInfo) DocsContentRes {
+	stmt, err := DB.Prepare("select docsFile from Doc where docsId = ? AND author = ?")
+	if err != nil {
+		fmt.Println(err)
+		return DocsContentRes{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(info.Id, info.Username)
+	if err != nil {
+		fmt.Println(err)
+		return DocsContentRes{Success: false, Msg: "database error"}
+	}
+	defer rows.Close()
+
+	var data []byte
+	err = rows.Scan(&data)
+	if err != nil {
+		fmt.Println(err)
+		return DocsContentRes{Success: false, Msg: "database error"}
+	}
+
+	return DocsContentRes{Success: true, Data: string(data)}
+}
+
+func WriteDocs(info WriteDocsInfo) WriteDocsRes {
+	stmt, err := DB.Prepare("update Doc set docsFile = ? where docsId = ? AND author = ?")
+	if err != nil {
+		fmt.Println(err)
+		return WriteDocsRes{Success: false, Msg: "database error"}
+	}
+
+	_, err = stmt.Exec([]byte(info.Content), info.Id, info.Username)
+	if err != nil {
+		fmt.Println(err)
+		return WriteDocsRes{Success: false, Msg: "database error"}
+	}
+	return WriteDocsRes{Success: true}
 }
