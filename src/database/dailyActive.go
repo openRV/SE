@@ -27,14 +27,17 @@ type ActiveUserNumRet struct {
 }
 
 func GetActiveUserNum() ActiveUserNumRet {
-	rows, err := DB.Query("select count(userName) from DailyLogin")
+	rows, err := DB.Query("select userName from DailyLogin")
 	if err != nil {
 		fmt.Println(err)
 		return ActiveUserNumRet{Success: false, Msg: "database error"}
 	}
 	defer rows.Close()
 
-	var activeNum int
-	rows.Scan(&activeNum)
+	activeNum := 0
+	for rows.Next() {
+		activeNum += 1
+	}
+
 	return ActiveUserNumRet{Success: true, Num: activeNum, Msg: "Active user num is ok"}
 }

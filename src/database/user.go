@@ -292,7 +292,7 @@ type UserNumRet struct {
 }
 
 func GetUserNum() UserNumRet {
-	row, err := DB.Query("select count(userName) from User")
+	row, err := DB.Query("select userName from User where role ='user'")
 	if err != nil {
 		fmt.Println(err)
 		return UserNumRet{
@@ -303,7 +303,10 @@ func GetUserNum() UserNumRet {
 	defer row.Close()
 
 	var ret UserNumRet
-	row.Scan(&ret.UserNum)
+	ret.UserNum = 0
+	for row.Next() {
+		ret.UserNum += 1
+	}
 	ret.Msg = "user num is ok"
 	ret.Success = true
 	return ret
@@ -335,13 +338,14 @@ func GetNewUserNum() NewUserNumRet {
 		D_date := date[0:10]
 
 		if D_data == nil {
-			D_data[0].Date = D_date
-			D_data[0].Num = 1
+			tmp := index.D_UserIncreaseData{Date: D_date, Num: 0}
+			D_data = append(D_data, tmp)
 		}
 		D_nonExist := false
 		for i, D_element := range D_data {
 			if D_element.Date == D_date {
-				D_element.Num += 1
+				D_data[i].Num += 1
+				break
 			}
 			if i == len(D_data)-1 {
 				D_nonExist = true
@@ -354,14 +358,15 @@ func GetNewUserNum() NewUserNumRet {
 
 		M_date := date[0:7]
 
-		if D_data == nil {
-			D_data[0].Date = D_date
-			D_data[0].Num = 1
+		if M_data == nil {
+			tmp := index.M_UserIncreaseData{Month: M_date, Num: 0}
+			M_data = append(M_data, tmp)
 		}
 		M_nonExist := false
 		for i, M_element := range M_data {
 			if M_element.Month == M_date {
-				M_element.Num += 1
+				M_data[i].Num += 1
+				break
 			}
 			if i == len(D_data)-1 {
 				M_nonExist = true
