@@ -2,20 +2,14 @@ package admin
 
 import (
 	"SE/src/database"
-	"SE/src/interface"
 	"SE/src/interface/admin/index"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func SelfInfo(c *gin.Context) {
-	userName := c.GetHeader("Uaername")
-
-	if !database.SearchUser(database.User{Username: userName, Password: ""}).Exist {
-		c.IndentedJSON(http.StatusOK,
-			Interface.ErrorRes{Success: false, Msg: "user does not exist"})
-		return
-	}
+	userName := c.Request.Header.Get("UserName")
 
 	ret := database.GetSelfInfo(userName)
 	res := index.SelfInfoResult{
