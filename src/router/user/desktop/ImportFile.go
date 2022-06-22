@@ -1,6 +1,8 @@
 package desktop
 
 import (
+	"SE/src/Interface/user/desktop"
+	"SE/src/database"
 	comInterface "SE/src/interface"
 	"fmt"
 	"net/http"
@@ -10,14 +12,19 @@ import (
 
 func ImportFile(c *gin.Context) {
 
-	file, err := c.FormFile("FormData")
+	json := make(map[string]interface{})
+	c.BindJSON(&json)
+
+	username := c.Request.Header.Get("Username")
+	dirId := json["dirId"].(string)
+
+	file, err := c.FormFile("file")
 	if err != nil {
 		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: "upload error"})
 		return
 	}
 
 	fileName := file.Filename
-	fmt.Println(fileName)
 
 	f, err := file.Open()
 	if err != nil {
@@ -40,7 +47,21 @@ func ImportFile(c *gin.Context) {
 		chunk = append(chunk, buf[:n]...)
 	}
 
-	fmt.Println(string(chunk))
+	var info database.ImportFileInfo
+	info.DirId = dirId
+	info.File = chunk
+	info.FileName = fileName
+	info.Username = username
 
-	c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: true, Msg: fileName})
+	res := database.ImportFile(info)
+	if !res.Success {
+		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: res.Msg})
+	}
+
+	var result desktop.ImportFileResult
+	result.Success = true
+	result.Data.DocsId = res.Id
+	result.Data.DocsName = res.Name
+
+	c.IndentedJSON(http.StatusOK, result)
 }

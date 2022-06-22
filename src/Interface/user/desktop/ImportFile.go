@@ -8,12 +8,14 @@ type ImportFileParams struct {
 	//FormData FormData `json:"FormData"` // TODO 文件以formData上传
 }
 
+type ImportFileData struct {
+	DocsId   string `json:"docsId"`
+	DocsName string `json:"docsName"`
+}
+
 type ImportFileResult struct {
-	Success bool `json:"success"`
-	Data    struct {
-		DocsId   string `json:"docsId"`
-		DocsName string `json:"docsName"`
-	} `json:"data"`
+	Success bool           `json:"success"`
+	Data    ImportFileData `json:"data"`
 }
 
 type ImportFile struct {

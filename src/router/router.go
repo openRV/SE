@@ -43,7 +43,6 @@ func MainRouter(router *gin.Engine) {
 	user.GET("/usersearch", userPackageDesktop.UserSearch)
 	user.GET("/readcontent", userPackageEdit.DocsContent)
 	user.GET("/writecontent", userPackageEdit.WriteDoc)
-
 	user.POST("/importfile", userPackageDesktop.ImportFile)
 
 	admin.GET("/userlist", adminPackage.UserList)

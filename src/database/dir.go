@@ -56,6 +56,20 @@ type DirContentRes struct {
 	Data    []desktop.DirContentData
 }
 
+type ImportFileInfo struct {
+	DirId    string
+	File     []byte
+	Username string
+	FileName string
+}
+
+type ImportFileRes struct {
+	Success bool
+	Msg     string
+	Id      string
+	Name    string
+}
+
 func UserDir(id string, root bool) UserDirRet {
 
 	var result UserDirRet
@@ -331,4 +345,39 @@ func DirContent(info DirContentInfo) DirContentRes {
 	}
 	return result
 
+}
+
+func ImportFile(info ImportFileInfo) ImportFileRes {
+	stmt, err := DB.Prepare(`insert into Doc 
+							(docsId , docsName , dodcsFile , author , createDate , lastUpdate , DocsType , viewCounts , open)
+							values (?,?,?,?,?,?,?,?)
+							`)
+	if err != nil {
+		fmt.Println(err)
+		return ImportFileRes{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+
+	id := uniqString()
+	_, err = stmt.Exec(id, info.FileName, info.File, info.Username, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"), "", 0, false)
+	if err != nil {
+		fmt.Println(err)
+		return ImportFileRes{Success: false, Msg: "database error"}
+	}
+
+	stmt, err = DB.Prepare(`
+				insert into Tree(dirId , root , subType , subId) 
+				values (?,?,?,?)
+							`)
+	if err != nil {
+		fmt.Println(err)
+		return ImportFileRes{Success: false, Msg: "database error"}
+	}
+	_, err = stmt.Exec(info.DirId, info.DirId == info.Username, "doc", id)
+	if err != nil {
+		fmt.Println(err)
+		return ImportFileRes{Success: false, Msg: "database error"}
+	}
+
+	return ImportFileRes{Success: true, Id: id, Name: info.FileName}
 }
