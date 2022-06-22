@@ -1,9 +1,9 @@
 package desktop
 
 import (
+	"SE/src/Interface/user/desktop"
 	"SE/src/database"
 	comInterface "SE/src/interface"
-	"SE/src/interface/user/desktop"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

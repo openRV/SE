@@ -53,8 +53,8 @@ func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 	var subType string
 	stmt.QueryRow(info.Id).Scan(&subType)
 
-	// insert into trash
 	if subType == "doc" {
+		// insert into trash
 		stmt, err = DB.Prepare("insert into Trash(itemType , itemId , owner , deleteDate) values (?,?,?,?)")
 		if err != nil {
 			fmt.Println(err)
@@ -65,6 +65,19 @@ func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 			fmt.Println(err)
 			return DeleteItemRes{Success: false, Msg: "database error"}
 		}
+
+		// delete from share
+		stmt, err = DB.Prepare("delete from Share where docId = ?")
+		if err != nil {
+			fmt.Println(err)
+			return DeleteItemRes{Success: false, Msg: "database error"}
+		}
+		_, err = stmt.Exec(info.Id)
+		if err != nil {
+			fmt.Println(err)
+			return DeleteItemRes{Success: false, Msg: "database error"}
+		}
+
 	}
 
 	// delete from tree

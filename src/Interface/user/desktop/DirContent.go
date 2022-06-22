@@ -5,7 +5,7 @@ package desktop
 // "GET"
 
 type DirContentParams struct {
-	DocsId   string `json:"docsId"`
+	DirId    string `json:"DirId"`
 	CurPage  int    `json:"curPage"`
 	PageSize int    `json:"pageSize"` // 文件夹与文件一样占一行
 }

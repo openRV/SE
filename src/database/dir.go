@@ -1,6 +1,7 @@
 package database
 
 import (
+	"SE/src/Interface/user/desktop"
 	"fmt"
 	"math/rand"
 	"time"
@@ -42,6 +43,17 @@ type MoveDirInfo struct {
 type MoveDirRet struct {
 	Success bool
 	Msg     string
+}
+
+type DirContentInfo struct {
+	Id       string
+	Username string
+}
+
+type DirContentRes struct {
+	Success bool
+	Msg     string
+	Data    []desktop.DirContentData
 }
 
 func UserDir(id string, root bool) UserDirRet {
@@ -242,5 +254,81 @@ func MoveDir(info MoveDirInfo) MoveDirRet {
 	}
 
 	return MoveDirRet{Success: true}
+
+}
+
+func DirContent(info DirContentInfo) DirContentRes {
+	stmt, err := DB.Prepare("select subType , subId from Tree where dirId = ?")
+	if err != nil {
+		fmt.Println(err)
+		return DirContentRes{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query(info.Id)
+	if err != nil {
+		fmt.Println(err)
+		return DirContentRes{Success: false, Msg: "database error"}
+	}
+
+	var result DirContentRes
+	for rows.Next() {
+		var dir Dir
+		var doc Doc
+		var subType string
+		var subId string
+		err = rows.Scan(&subType, &subId)
+		if err != nil {
+			fmt.Println(err)
+			return DirContentRes{Success: false, Msg: "database error"}
+		}
+
+		if subType == "dir" {
+			dir.Id = subId
+			dir.Owner = info.Username
+			stmt1, err := DB.Prepare("select dirName , createDate , lastView from Dir where dirId = ? AND owner = ?")
+			if err != nil {
+				fmt.Println(err)
+				return DirContentRes{Success: false, Msg: "database error"}
+			}
+			defer stmt1.Close()
+			err = stmt1.QueryRow(dir.Id, dir.Owner).Scan(&dir.Name, &dir.CreateDate, &dir.LastView)
+			if err != nil {
+				fmt.Println(err)
+				return DirContentRes{Success: false, Msg: "database error"}
+			}
+		} else {
+			doc.DocsId = subId
+			doc.Author = info.Username
+			stmt1, err := DB.Prepare("select docsName , docsType , createDate , lastUpdate from Dir where docsId = ? AND author = ?")
+			if err != nil {
+				fmt.Println(err)
+				return DirContentRes{Success: false, Msg: "database error"}
+			}
+			defer stmt1.Close()
+			err = stmt1.QueryRow(doc.DocsId, doc.Author).Scan(&doc.DocsName, &doc.DocsType, &doc.CreateDate, &doc.LastUpdate)
+			if err != nil {
+				fmt.Println(err)
+				return DirContentRes{Success: false, Msg: "database error"}
+			}
+		}
+
+		var data desktop.DirContentData
+		data.Dir.CreateDate = dir.CreateDate
+		data.Dir.DirId = dir.Id
+		data.Dir.DirName = dir.Name
+		data.Dir.LastView = dir.LastView
+		data.Dir.Owner = dir.Owner
+
+		data.Docs.Author = doc.Author
+		data.Docs.CreateDate = doc.CreateDate
+		data.Docs.DocsId = doc.DocsId
+		data.Docs.DocsName = doc.DocsName
+		data.Docs.DocsType = doc.DocsType
+		data.Docs.LastView = doc.LastUpdate
+
+		result.Data = append(result.Data, data)
+	}
+	return result
 
 }

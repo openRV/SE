@@ -40,6 +40,11 @@ CREATE TABLE Trash(
     PRIMARY KEY(itemType, itemId)
 );
 
+CREATE TABLE Share(
+    docId VARCHAR not NULL,
+    userId VARCHAR not NULL
+);
+
 CREATE TABLE User(
     userName VARCHAR not NULL PRIMARY KEY,
     password VARCHAR not NULL,

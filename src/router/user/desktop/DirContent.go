@@ -10,10 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Trash(c *gin.Context) {
-
+func DirContent(c *gin.Context) {
 	// parse request
 	username := c.Request.Header.Get("Username")
+	dirId := c.Query("dirId")
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 	curPage, _ := strconv.Atoi(c.Query("curPage"))
 	if curPage < 1 {
@@ -23,18 +23,16 @@ func Trash(c *gin.Context) {
 		pageSize = 15
 	}
 
-	var info database.TrashInfo
-
+	var info database.DirContentInfo
+	info.Id = dirId
 	info.Username = username
-
-	res := database.Trash(info)
+	res := database.DirContent(info)
 	if !res.Success {
 		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: res.Msg})
-		return
 	}
 
 	num := len(res.Data)
-	var result desktop.TrashResult
+	var result desktop.DirContentResult
 	result.Success = true
 	result.Total = num
 
@@ -53,11 +51,7 @@ func Trash(c *gin.Context) {
 	}
 
 	for i := from; i < to; i += 1 {
-		var data desktop.TrashData
-		data.DocsId = res.Data[i].Id
-		data.DeleteDate = res.Data[i].DeleteDate
-		data.Author = res.Data[i].Author
-		result.Data = append(result.Data, data)
+		result.Data = append(result.Data, res.Data[i])
 	}
 
 	c.IndentedJSON(http.StatusOK, result)
