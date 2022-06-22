@@ -58,8 +58,3 @@ CREATE TABLE User(
 CREATE TABLE DailyLogin(--统计某一天的活跃人数
     userName VARCHAR NOT NULL
 );
-
-CREATE TABLE DailyActive(
-    Date VARCHAR NOT NULL PRIMARY KEY ,
-    Num INTEGER NOT NULL
-)
