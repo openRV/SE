@@ -52,3 +52,14 @@ CREATE TABLE User(
     role CHAR(5),--区分管理员与普通用户
     avatar VARCHAR
 );
+
+--实现每日活跃用户统计
+
+CREATE TABLE DailyLogin(--统计某一天的活跃人数
+    userName VARCHAR NOT NULL
+);
+
+CREATE TABLE DailyActive(
+    Date VARCHAR NOT NULL PRIMARY KEY ,
+    Num INTEGER NOT NULL
+)
