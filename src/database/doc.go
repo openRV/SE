@@ -257,7 +257,7 @@ func NewDoc(info NewDocInfo) NewDocRes {
 
 func GetAllDocSize() int {
 	var ret int
-	stmt, err := DB.Prepare("select docFile From Doc")
+	stmt, err := DB.Prepare("select docsFile From Doc")
 	if err != nil {
 		fmt.Println(err)
 		return -1
