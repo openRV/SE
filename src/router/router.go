@@ -40,7 +40,7 @@ func MainRouter(router *gin.Engine) {
 
 	admin.GET("/userlist", adminPackage.UserList)
 	admin.DELETE("/deleteuser", adminPackage.DeleteUser)
-	admin.GET("/selfinfo", adminPackage.SetInfo)
+	admin.GET("/selfInfo", adminPackage.SetInfo)
 	admin.POST("/setinfo", adminPackage.SetInfo)
 	admin.POST("/newadmin", adminPackage.NewAdmin)
 	admin.GET("/storageinfo", adminPackage.GetStorageInfo)
