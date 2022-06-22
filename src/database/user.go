@@ -284,3 +284,24 @@ func GetAllUser() AllDataRet {
 		Data: data,
 	}
 }
+
+type UserNumRet struct {
+	UserNum int
+	Msg     string
+}
+
+func GetUserNum() UserNumRet {
+	row, err := DB.Query("select count(userName) from User")
+	if err != nil {
+		fmt.Println(err)
+		return UserNumRet{
+			UserNum: -1,
+			Msg:     "database error",
+		}
+	}
+	defer row.Close()
+
+	var ret UserNumRet
+	row.Scan(&ret.UserNum)
+	return ret
+}
