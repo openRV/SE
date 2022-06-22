@@ -6,25 +6,24 @@ package index
 // "GET"
 
 type OpenSearchParams struct {
-	SearchContent string `json:"searchContent"`
-	SearchType    string `json:"searchType"` // Title | Author
-	CurPage       int    `json:"curPage"`    // default 1
-	PageSize      int    `json:"pageSize"`   // default 15
+	searchTitle  string `json:"searchTitle"`
+	SearchAuthor string `json:"searchAuthor"` // Title | Author
+	CurPage      int    `json:"curPage"`      // default 1
+	PageSize     int    `json:"pageSize"`     // default 15
 }
 
 type OpenSearchResult struct {
-	Success bool `json:"success"`
-	Total   int  `json:"total"` // 总共的数量
+	Success bool             `json:"success"`
+	Total   int              `json:"total"` // 总共的数量
 	Data    []OpenSearchData `json:"data"`
 }
 
 type OpenSearchData struct {
-		DocsId     string `json:"docsId"` // docs key
-		DocsName   string `json:"docsName"`
-		Author     string `json:"author"`
-		LastUpdate string `json:"lastUpdate"` // yyyy-mm-dd
-		ViewCounts int    `json:"viewCounts"`
-
+	DocsId     string `json:"docsId"` // docs key
+	DocsName   string `json:"docsName"`
+	Author     string `json:"author"`
+	LastUpdate string `json:"lastUpdate"` // yyyy-mm-dd
+	ViewCounts int    `json:"viewCounts"`
 }
 
 type OpenSearch struct {

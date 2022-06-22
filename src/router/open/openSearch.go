@@ -12,10 +12,10 @@ import (
 
 func OpenSearch(c *gin.Context) {
 
-	var searchInfo database.DocSearchInfo
+	var searchInfo database.OpenDocSearchInfo
 
-	searchInfo.Content = c.Query("searchContent")
-	searchInfo.Type = c.Query("searchType")
+	searchInfo.Title = c.Query("searchTitle")
+	searchInfo.Author = c.Query("searchAuthor")
 	curPage, _ := strconv.Atoi(c.Query("curPage"))
 	if curPage < 1 {
 		curPage = 1

@@ -5,9 +5,14 @@ import (
 	"time"
 )
 
-type DocSearchInfo struct {
-	Type    string // Title | Author
-	Content string
+// type DocSearchInfo struct {
+// 	Type    string // Title | Author
+// 	Content string
+// }
+
+type OpenDocSearchInfo struct {
+	Title  string
+	Author string
 }
 
 type SetVizInfoRet struct {
@@ -66,58 +71,94 @@ type RenameRet struct {
 }
 
 // returned string -> error msg, nil for success
-func OpenSearch(search DocSearchInfo) ([]Doc, string) {
+func OpenSearch(search OpenDocSearchInfo) ([]Doc, string) {
 
 	var result []Doc
+	var flag int
+	// Author
+	if search.Author == "" && search.Title != "" {
+		flag = 0
+	}
+	// Title
+	if search.Author != "" && search.Title == "" {
+		flag = 1
+	}
+	// Author & Title
+	if search.Author != "" && search.Title != "" {
+		flag = 2
+	}
+	switch flag {
+	case 0:
+		{
+			stmt := `select 
+					docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
+					from 
+					Doc where 
+					author like ?
+					AND open = ?
+					`
+			rows, err := DB.Query(stmt, fmt.Sprintf("%%%s%%", search.Author), true)
+			if err != nil {
+				fmt.Println(err)
+				return nil, "database error"
+			}
+			defer rows.Close()
+			for rows.Next() {
+				var doc Doc
+				rows.Scan(&doc.DocsId, &doc.DocsName, &doc.Author, &doc.CreateDate, &doc.LastUpdate, &doc.DocsType, &doc.ViewCounts)
+				result = append(result, doc)
+			}
 
-	if search.Type == "Author" {
-
-		stmt := `select 
-				docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
-				from 
-				Doc where 
-				author like ?
-				AND open = ?
-				`
-		rows, err := DB.Query(stmt, fmt.Sprintf("%%%s%%", search.Content), true)
-		if err != nil {
-			fmt.Println(err)
-			return nil, "database error"
+			// return result, ""
 		}
-		defer rows.Close()
-		for rows.Next() {
-			var doc Doc
-			rows.Scan(&doc.DocsId, &doc.DocsName, &doc.Author, &doc.CreateDate, &doc.LastUpdate, &doc.DocsType, &doc.ViewCounts)
-			result = append(result, doc)
+	case 1:
+		{
+			stmt := `select 
+					docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
+					from Doc 
+					where 
+					docsName like ?
+					AND open = ?
+					`
+			rows, err := DB.Query(stmt, fmt.Sprintf("%%%s%%", search.Title), true)
+			if err != nil {
+				fmt.Println(err)
+				return nil, "database error"
+			}
+			defer rows.Close()
+			for rows.Next() {
+				var doc Doc
+				rows.Scan(&doc.DocsId, &doc.DocsName, &doc.Author, &doc.CreateDate, &doc.LastUpdate, &doc.DocsType, &doc.ViewCounts)
+				result = append(result, doc)
+			}
+
+			// return result, ""
 		}
-
-		return result, ""
-
-	} else {
-
-		stmt := `select 
-				docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
-				from Doc 
-				where 
-				docsName like ?
-				AND open = ?
-				`
-		rows, err := DB.Query(stmt, fmt.Sprintf("%%%s%%", search.Content), true)
-		if err != nil {
-			fmt.Println(err)
-			return nil, "database error"
+	case 2:
+		{
+			stmt := `select 
+					docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
+					from Doc 
+					where 
+					docsName like ?
+					AND author like ?
+					AND open = ?
+					`
+			rows, err := DB.Query(stmt, fmt.Sprintf("%%%s%%", search.Title), fmt.Sprintf("%%%s%%", search.Author), true)
+			if err != nil {
+				fmt.Println(err)
+				return nil, "database error"
+			}
+			defer rows.Close()
+			for rows.Next() {
+				var doc Doc
+				rows.Scan(&doc.DocsId, &doc.DocsName, &doc.Author, &doc.CreateDate, &doc.LastUpdate, &doc.DocsType, &doc.ViewCounts)
+				result = append(result, doc)
+			}
 		}
-		defer rows.Close()
-		for rows.Next() {
-			var doc Doc
-			rows.Scan(&doc.DocsId, &doc.DocsName, &doc.Author, &doc.CreateDate, &doc.LastUpdate, &doc.DocsType, &doc.ViewCounts)
-			result = append(result, doc)
-		}
-
-		return result, ""
 
 	}
-
+	return result, ""
 }
 
 func HotOpenDocs() ([]Doc, string) {
