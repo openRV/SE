@@ -1,8 +1,8 @@
 package admin
 
 import (
-	"SE/src/Interface/admin/index"
 	"SE/src/database"
+	"SE/src/interface/admin/index"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -25,7 +25,6 @@ func UserList(c *gin.Context) {
 			data := index.UserListData{
 				UserName: x[0],
 				Password: x[1],
-				Storage:  x[2],
 			}
 			res.Data = append(res.Data, data)
 		}
@@ -35,7 +34,6 @@ func UserList(c *gin.Context) {
 			data := index.UserListData{
 				UserName: x[0],
 				Password: x[1],
-				Storage:  x[2],
 			}
 			res.Data = append(res.Data, data)
 		}

@@ -1,9 +1,9 @@
 package admin
 
 import (
-	"SE/src/Interface"
-	"SE/src/Interface/admin/index"
 	"SE/src/database"
+	"SE/src/interface"
+	"SE/src/interface/admin/index"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
