@@ -1,7 +1,7 @@
 package database
 
 import (
-	"SE/src/Interface/admin/index"
+	"SE/src/interface/admin/index"
 	"fmt"
 )
 
