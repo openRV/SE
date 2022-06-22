@@ -250,7 +250,7 @@ func RegisterAdmin(userName string, password string) RegisterRet {
 }
 
 type AllDataRet struct {
-	Data [][3]string
+	Data [][2]string
 	Msg  string
 }
 
@@ -268,7 +268,7 @@ func GetAllUser() AllDataRet {
 	}
 	defer rows.Close()
 
-	var data [][3]string
+	var data [][2]string
 
 	for rows.Next() {
 		var str1, str2 string
@@ -277,7 +277,7 @@ func GetAllUser() AllDataRet {
 			fmt.Println(err)
 			return AllDataRet{Msg: "data get proceess err"}
 		}
-		data = append(data, [3]string{str1, str2, ""})
+		data = append(data, [2]string{str1, str2})
 	}
 
 	return AllDataRet{
