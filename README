@@ -16,7 +16,7 @@
 
 /user/desktop
 1            /deleteitem
-            /dircontent
+1            /dircontent
             /downloadlog
 1            /emptytrash
             /importfile
