@@ -6,6 +6,7 @@ package desktop
 
 type DeleteItemParams struct {
 	DocsId string `json:"docsId"`
+	IsDir  string `json:"isDir"`
 }
 
 type DeleteItemResult struct {

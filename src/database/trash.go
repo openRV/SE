@@ -8,6 +8,7 @@ import (
 type DeleteItemInfo struct {
 	Username string
 	Id       string
+	IsDir    bool
 }
 
 type DeleteItemRes struct {
@@ -43,19 +44,11 @@ type TrashRes struct {
 func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 
 	// get item's type doc or dir
-	stmt, err := DB.Prepare("select subType from Tree where subId = ?")
-	if err != nil {
-		fmt.Println(err)
-		return DeleteItemRes{Success: false, Msg: "database error"}
-	}
-	defer stmt.Close()
+	subType := info.IsDir
 
-	var subType string
-	stmt.QueryRow(info.Id).Scan(&subType)
-
-	if subType == "doc" {
+	if !subType {
 		// insert into trash
-		stmt, err = DB.Prepare("insert into Trash(itemType , itemId , owner , deleteDate) values (?,?,?,?)")
+		stmt, err := DB.Prepare("insert into Trash(itemType , itemId , owner , deleteDate) values (?,?,?,?)")
 		if err != nil {
 			fmt.Println(err)
 			return DeleteItemRes{Success: false, Msg: "database error"}
@@ -81,7 +74,7 @@ func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 	}
 
 	// delete from tree
-	stmt, err = DB.Prepare("delete from Tree where subType = ? AND subId = ?")
+	stmt, err := DB.Prepare("delete from Tree where subType = ? AND subId = ?")
 	if err != nil {
 		fmt.Println(err)
 		return DeleteItemRes{Success: false, Msg: "database error"}

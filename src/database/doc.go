@@ -63,6 +63,7 @@ type RenameInfo struct {
 	Id       string
 	Newname  string
 	Username string
+	IsDir    bool
 }
 
 type RenameRet struct {
@@ -329,23 +330,46 @@ func MoveDoc(info MoveDocInfo) MoveDocRet {
 }
 
 func Rename(info RenameInfo) RenameRet {
-	stmt, err := DB.Prepare(`
+	if !info.IsDir {
+		// rename file
+		stmt, err := DB.Prepare(`
 				update 
 				Doc
 				set docsName = ?
 				where docsId = ? AND author = ? 
 			`)
-	if err != nil {
-		fmt.Println(err)
-		return RenameRet{Success: false, Msg: "database error"}
-	}
-	defer stmt.Close()
+		if err != nil {
+			fmt.Println(err)
+			return RenameRet{Success: false, Msg: "database error"}
+		}
+		defer stmt.Close()
 
-	_, err = stmt.Exec(info.Newname, info.Id, info.Username)
+		_, err = stmt.Exec(info.Newname, info.Id, info.Username)
 
-	if err != nil {
-		fmt.Println(err)
-		return RenameRet{Success: false, Msg: "database error"}
+		if err != nil {
+			fmt.Println(err)
+			return RenameRet{Success: false, Msg: "database error"}
+		}
+	} else {
+		// rename dir
+		stmt, err := DB.Prepare(`
+				update 
+				Dir
+				set dirName = ?
+				where dirId = ? AND owner = ? 
+			`)
+		if err != nil {
+			fmt.Println(err)
+			return RenameRet{Success: false, Msg: "database error"}
+		}
+		defer stmt.Close()
+
+		_, err = stmt.Exec(info.Newname, info.Id, info.Username)
+
+		if err != nil {
+			fmt.Println(err)
+			return RenameRet{Success: false, Msg: "database error"}
+		}
 	}
 
 	return RenameRet{Success: true}

@@ -7,6 +7,7 @@ package edit
 type ReNameParams struct {
 	DocsId  string `json:"docsId"`
 	NewName string `json:"newName"`
+	IsDir   bool   `json:"isDir"`
 }
 
 type ReNameResult struct {
