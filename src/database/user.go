@@ -255,7 +255,7 @@ type AllDataRet struct {
 }
 
 func GetAllUser() AllDataRet {
-	stmt, err := DB.Prepare("select userName,password from User where role='user'")s
+	stmt, err := DB.Prepare("select userName,password from User where role='user'")
 	if err != nil {
 		fmt.Println(err)
 		return AllDataRet{Msg: "database err"}
