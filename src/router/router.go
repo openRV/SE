@@ -40,6 +40,7 @@ func MainRouter(router *gin.Engine) {
 	user.GET("/trash", userPackageDesktop.Trash)
 	user.GET("/dircontent", userPackageDesktop.DirContent)
 	user.GET("/lastview", userPackageDesktop.LastView)
+	user.GET("/usersearch", userPackageDesktop.UserSearch)
 
 	user.POST("/importfile", userPackageDesktop.ImportFile)
 

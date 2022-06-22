@@ -80,6 +80,18 @@ type LastViewRes struct {
 	Data    []Doc
 }
 
+type UserSearchInfo struct {
+	SearchContent string
+	SearchType    string // Title Author
+	Username      string
+}
+
+type UserSearchRes struct {
+	Success bool
+	Msg     string
+	Data    []Doc
+}
+
 // returned string -> error msg, nil for success
 func OpenSearch(search OpenDocSearchInfo) ([]Doc, string) {
 
@@ -369,6 +381,69 @@ func LastView(info LastViewInfo) LastViewRes {
 		}
 		doc.Author = info.Username
 		result.Data = append(result.Data, doc)
+	}
+
+	result.Success = true
+	return result
+
+}
+
+func UserSearch(info UserSearchInfo) UserSearchRes {
+
+	var result UserSearchRes
+
+	if info.SearchType == "Author" {
+
+		stmt, err := DB.Prepare(`
+					select docsId , docsName , createDate , lastUpdate , docsType , viewCounts
+					from Doc
+					where author = ? AND author like ?
+				`)
+		if err != nil {
+			fmt.Println(err)
+			return UserSearchRes{Success: false, Msg: "database error"}
+		}
+
+		rows, err := stmt.Query(info.Username, fmt.Sprintf("%%%s%%", info.SearchContent))
+		if err != nil {
+			fmt.Println(err)
+			return UserSearchRes{Success: false, Msg: "database error"}
+		}
+
+		for rows.Next() {
+			var doc Doc
+			err = rows.Scan(&doc.DocsId, &doc.DocsName, &doc.CreateDate, &doc.LastUpdate, &doc.DocsType, &doc.ViewCounts)
+			if err != nil {
+				fmt.Println(err)
+				return UserSearchRes{Success: false, Msg: "database error"}
+			}
+			result.Data = append(result.Data, doc)
+		}
+	} else {
+		stmt, err := DB.Prepare(`
+					select docsId , docsName , createDate , lastUpdate , docsType , viewCounts
+					from Doc
+					where author = ? AND docsName like ?
+				`)
+		if err != nil {
+			fmt.Println(err)
+			return UserSearchRes{Success: false, Msg: "database error"}
+		}
+
+		rows, err := stmt.Query(info.Username, fmt.Sprintf("%%%s%%", info.SearchContent))
+		if err != nil {
+			fmt.Println(err)
+			return UserSearchRes{Success: false, Msg: "database error"}
+		}
+		for rows.Next() {
+			var doc Doc
+			err = rows.Scan(&doc.DocsId, &doc.DocsName, &doc.CreateDate, &doc.LastUpdate, &doc.DocsType, &doc.ViewCounts)
+			if err != nil {
+				fmt.Println(err)
+				return UserSearchRes{Success: false, Msg: "database error"}
+			}
+			result.Data = append(result.Data, doc)
+		}
 	}
 
 	result.Success = true
