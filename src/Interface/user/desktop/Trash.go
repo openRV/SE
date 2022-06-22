@@ -9,14 +9,16 @@ type TrashParams struct {
 	PageSize int `json:"pageSize"` // default 15
 }
 
+type TrashData struct {
+	DocsId     string `json:"docsId"`
+	Author     string `json:"author"`
+	DeleteDate string `json:"deleteDate"`
+}
+
 type TrashResult struct {
-	Success bool `json:"success"`
-	Total   int  `json:"total"`
-	Data    struct {
-		DocsId     string `json:"docsId"`
-		Author     string `json:"author"`
-		DeleteDate string `json:"deleteDate"`
-	} `json:"data"`
+	Success bool        `json:"success"`
+	Total   int         `json:"total"`
+	Data    []TrashData `json:"data"`
 }
 
 type Trash struct {

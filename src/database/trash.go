@@ -24,6 +24,22 @@ type EmptyTrashRes struct {
 	Msg     string
 }
 
+type TrashInfo struct {
+	Username string
+}
+
+type TrashData struct {
+	Id         string
+	Author     string
+	DeleteDate string
+}
+
+type TrashRes struct {
+	Success bool
+	Msg     string
+	Data    []TrashData
+}
+
 func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 
 	// get item's type doc or dir
@@ -38,15 +54,17 @@ func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 	stmt.QueryRow(info.Id).Scan(&subType)
 
 	// insert into trash
-	stmt, err = DB.Prepare("insert into Trash(itemType , itemId , owner , deleteDate) values (?,?,?,?)")
-	if err != nil {
-		fmt.Println(err)
-		return DeleteItemRes{Success: false, Msg: "database error"}
-	}
-	_, err = stmt.Exec(subType, info.Id, info.Username, time.Now().Format("2006-01-02 15:04:05"))
-	if err != nil {
-		fmt.Println(err)
-		return DeleteItemRes{Success: false, Msg: "database error"}
+	if subType == "doc" {
+		stmt, err = DB.Prepare("insert into Trash(itemType , itemId , owner , deleteDate) values (?,?,?,?)")
+		if err != nil {
+			fmt.Println(err)
+			return DeleteItemRes{Success: false, Msg: "database error"}
+		}
+		_, err = stmt.Exec(subType, info.Id, info.Username, time.Now().Format("2006-01-02 15:04:05"))
+		if err != nil {
+			fmt.Println(err)
+			return DeleteItemRes{Success: false, Msg: "database error"}
+		}
 	}
 
 	// delete from tree
@@ -97,22 +115,39 @@ func EmptyTrash(info EmptyTrashInfo) EmptyTrashRes {
 				return EmptyTrashRes{Success: false, Msg: "database error"}
 			}
 
-		} else {
-			stmt, err = DB.Prepare("delete from Dir where dirId = ? AND author = ?")
-			if err != nil {
-				fmt.Println(err)
-				return EmptyTrashRes{Success: false, Msg: "database error"}
-			}
-			_, err = stmt.Exec(itemId, info.Username)
-			if err != nil {
-				fmt.Println(err)
-				return EmptyTrashRes{Success: false, Msg: "database error"}
-			}
-
 		}
 
 	}
 
 	return EmptyTrashRes{Success: true}
 
+}
+
+func Trash(info TrashInfo) TrashRes {
+	stmt, err := DB.Prepare("select itemId , deleteDate from Trash where itemType == ? AND owner == ?")
+	if err != nil {
+		fmt.Println(err)
+		return TrashRes{Success: false, Msg: "database error"}
+	}
+	defer stmt.Close()
+	rows, err := stmt.Query("doc", info.Username)
+	if err != nil {
+		fmt.Println(err)
+		return TrashRes{Success: false, Msg: "database error"}
+	}
+	defer rows.Close()
+
+	var result TrashRes
+	for rows.Next() {
+		var data TrashData
+		data.Author = info.Username
+		err = rows.Scan(&data.Id, &data.DeleteDate)
+		if err != nil {
+			fmt.Println(err)
+			return TrashRes{Success: false, Msg: "database error"}
+		}
+		result.Data = append(result.Data, data)
+	}
+	result.Success = true
+	return result
 }

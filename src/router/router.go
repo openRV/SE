@@ -36,6 +36,7 @@ func MainRouter(router *gin.Engine) {
 	user.POST("/movefile", userPackageDesktop.MoveDoc)
 	user.POST("/rename", userPackageEdit.Rename)
 	user.POST("/deleteitem", userPackageDesktop.DeleteItem)
+	user.GET("/trash", userPackageDesktop.Trash)
 
 	// 需要验证 Token 的部分，在验证token以后可以按照如下方法获取 username password role
 	admin.POST("/test", func(c *gin.Context) {
