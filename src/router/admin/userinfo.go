@@ -1,10 +1,11 @@
 package admin
 
 import (
-	"SE/src/Interface/admin/index"
 	"SE/src/database"
-	"github.com/gin-gonic/gin"
+	"SE/src/interface/admin/index"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func UserInfo(c *gin.Context) {
