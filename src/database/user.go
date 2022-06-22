@@ -304,6 +304,7 @@ func GetUserNum() UserNumRet {
 
 	var ret UserNumRet
 	row.Scan(&ret.UserNum)
+	ret.Msg = "user num is ok"
 	ret.Success = true
 	return ret
 }
@@ -372,5 +373,5 @@ func GetNewUserNum() NewUserNumRet {
 		}
 	}
 
-	return NewUserNumRet{Success: true, D_data: D_data, M_data: M_data}
+	return NewUserNumRet{Success: true, D_data: D_data, M_data: M_data, Msg: "new user num is ok"}
 }
