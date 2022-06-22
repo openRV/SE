@@ -50,7 +50,7 @@ func MainRouter(router *gin.Engine) {
 	admin.POST("/setinfo", adminPackage.SetInfo)
 	admin.POST("/newadmin", adminPackage.NewAdmin)
 	admin.GET("/storageinfo", adminPackage.GetStorageInfo)
-	//admin.GET("/userinfo",adminPackage.)
+	admin.GET("/userinfo", adminPackage.UserInfo)
 	// 需要验证 Token 的部分，在验证token以后可以按照如下方法获取 username password role
 	admin.POST("/test", func(c *gin.Context) {
 		fmt.Println(c.Request.Header.Get("Username"))
