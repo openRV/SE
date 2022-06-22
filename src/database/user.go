@@ -227,7 +227,7 @@ func UpadateInfo(oldUserName string, params index.SetInfoParams) UpdateRet {
 }
 
 func RegisterAdmin(userName string, password string) RegisterRet {
-	stmt, err := DB.Prepare("insert into User(userName , password , registDate , role , avatar) values (?,?,?,'Admin',?)")
+	stmt, err := DB.Prepare("insert into User(userName , password , registDate , role , avatar) values (?,?,?,'admin',?)")
 	if err != nil {
 		fmt.Println(err)
 		return RegisterRet{
