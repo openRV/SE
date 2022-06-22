@@ -149,8 +149,8 @@ func DeteleUser(userName string) DeleteRet {
 	}
 	defer stmt.Close()
 
-	err = stmt.QueryRow(userName).Scan(nil)
-	if err != nil {
+	row := stmt.QueryRow(userName).Scan(nil)
+	if row == nil {
 		fmt.Println(err)
 		return DeleteRet{
 			Success: false,
