@@ -4,16 +4,16 @@ import (
 	"SE/src/database"
 	"SE/src/interface/admin/index"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetStorageInfo(c *gin.Context) {
 	var res index.StorageInfoResult
 
-	res.Data.UsingStorage = strconv.Itoa(database.GetAllDocSize() / 1048576)
-	res.Data.TotalStorage = "100"
+	res.Data.UsingStorage = float32(database.GetAllDocSize() / 1048576)
+	res.Data.TotalStorage = 100
 
 	ret := database.GetIncrease()
 	if !ret.Success {

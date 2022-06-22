@@ -30,13 +30,18 @@ func GetIncrease() DailyIncreaseRet {
 
 		//对 每日增长结构体数组 进行增长
 		if D_data == nil {
-			D_data[0].Date = D_date
-			D_data[0].Num = 1
+			var date index.D_increaseData
+			date.Date = D_date
+			date.Num = 1
+			// D_data[0].Date = D_date
+			// D_data[0].Num = 1
+			D_data = append(D_data, date)
 		} else {
 			D_nonExist := false
 			for i, D_element := range D_data {
 				if D_element.Date == D_date {
-					D_element.Num += 1
+					// D_element.Num += 1
+					D_data[i].Num += 1
 					break
 				}
 				if i == len(D_data)-1 {
@@ -54,13 +59,16 @@ func GetIncrease() DailyIncreaseRet {
 
 		//对 每月增长结构体数组进行增长
 		if M_data == nil {
-			M_data[0].Month = M_date
-			M_data[0].Num = 1
+			var date index.M_increaseData
+			date.Month = M_date
+			date.Num = 1
+			M_data = append(M_data, date)
 		} else {
 			M_nonExist := false
 			for i, M_element := range M_data {
 				if M_element.Month == M_date {
-					M_element.Num += 1
+					// M_element.Num += 1
+					M_data[i].Num += 1
 					break
 				}
 				if i == len(M_data)-1 {

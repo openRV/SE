@@ -10,13 +10,10 @@ type StorageInfoParams struct {
 type StorageInfoResult struct {
 	Success bool `json:"success"`
 	Data    struct {
-		TotalStorage string `json:"totalStorage"` // 带单位
-		UsingStorage string `json:"usingStorage"`
-		StoreRate    string `json:"storeRate"` // 使用率
+		TotalStorage float32 `json:"totalStorage"`
+		UsingStorage float32 `json:"usingStorage"`
 		D_increase   []D_increaseData
 		M_increase   []M_increaseData
-		// 此处我不清楚画图需要的对应的数据类型
-		// 励巨画图时弄一下?
 	} `json:"data"`
 }
 
