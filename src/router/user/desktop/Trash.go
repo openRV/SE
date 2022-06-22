@@ -54,6 +54,7 @@ func Trash(c *gin.Context) {
 
 	for i := from; i < to; i += 1 {
 		var data desktop.TrashData
+		data.DocsName = database.GetDocsName(res.Data[i].Id).DocsName
 		data.DocsId = res.Data[i].Id
 		data.DeleteDate = res.Data[i].DeleteDate
 		data.Author = res.Data[i].Author

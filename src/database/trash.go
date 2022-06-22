@@ -30,6 +30,7 @@ type TrashInfo struct {
 }
 
 type TrashData struct {
+	Name       string
 	Id         string
 	Author     string
 	DeleteDate string

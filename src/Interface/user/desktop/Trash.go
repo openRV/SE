@@ -10,6 +10,7 @@ type TrashParams struct {
 }
 
 type TrashData struct {
+	DocsName   string `json:"docsName"`
 	DocsId     string `json:"docsId"`
 	Author     string `json:"author"`
 	DeleteDate string `json:"deleteDate"`

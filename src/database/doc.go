@@ -536,3 +536,22 @@ func WriteDocs(info WriteDocsInfo) WriteDocsRes {
 	}
 	return WriteDocsRes{Success: true}
 }
+
+type DocsNameRet struct {
+	Success  bool
+	Msg      string
+	DocsName string
+}
+
+func GetDocsName(docsId string) DocsNameRet {
+	row := DB.QueryRow("select docsName from Doc where docsId=$1", docsId)
+
+	var docsName string
+	err := row.Scan(&docsName)
+	if err != nil {
+		fmt.Println(err)
+		return DocsNameRet{Success: false, Msg: "database error"}
+	}
+
+	return DocsNameRet{Success: true, DocsName: docsName}
+}
