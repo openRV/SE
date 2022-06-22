@@ -121,9 +121,9 @@ func UserDir(id string, root bool) UserDirRet {
 		}
 
 		// fill in blank name, owner, createDate, lastView of result
-		fillinDirInfo(dir)
+		fillinDirInfo(&dir)
 		// fill in subdir
-		fillinSubDir(dir)
+		fillinSubDir(&dir)
 
 		result.Data[0].Subdir = append(result.Data[0].Subdir, dir)
 	}
@@ -133,7 +133,7 @@ func UserDir(id string, root bool) UserDirRet {
 
 }
 
-func fillinSubDir(dir Dir) UserDirRet {
+func fillinSubDir(dir *Dir) UserDirRet {
 	stmt, err := DB.Prepare(`
 				select subId
 				from Tree
@@ -143,7 +143,7 @@ func fillinSubDir(dir Dir) UserDirRet {
 		fmt.Println(err)
 		return UserDirRet{Success: false, Msg: "database error"}
 	}
-	row, err := stmt.Query(dir.Id)
+	row, err := stmt.Query(dir.Id, "dir")
 	if err != nil {
 		fmt.Println(err)
 		return UserDirRet{Success: false, Msg: "database error"}
@@ -152,11 +152,11 @@ func fillinSubDir(dir Dir) UserDirRet {
 	for row.Next() {
 		var subDir Dir
 		row.Scan(&subDir.Id)
-		res := fillinSubDir(subDir)
+		res := fillinSubDir(&subDir)
 		if !res.Success {
 			return res
 		}
-		res = fillinDirInfo(subDir)
+		res = fillinDirInfo(&subDir)
 		if !res.Success {
 			return res
 		}
@@ -167,7 +167,7 @@ func fillinSubDir(dir Dir) UserDirRet {
 
 }
 
-func fillinDirInfo(dir Dir) UserDirRet {
+func fillinDirInfo(dir *Dir) UserDirRet {
 	stmt, err := DB.Prepare(`
 				select dirName , owner , createDate , lastView
 				from Dir
@@ -177,7 +177,7 @@ func fillinDirInfo(dir Dir) UserDirRet {
 		fmt.Println(err)
 		return UserDirRet{Success: false, Msg: "database error"}
 	}
-	err = stmt.QueryRow(dir.Id).Scan(dir.Name, dir.Owner, dir.CreateDate, dir.LastView)
+	err = stmt.QueryRow(dir.Id).Scan(&dir.Name, &dir.Owner, &dir.CreateDate, &dir.LastView)
 	if err != nil {
 		fmt.Println(err)
 		return UserDirRet{Success: false, Msg: "database error"}
@@ -190,7 +190,7 @@ func NewDir(info NewDirInfo) NewDirRes {
 	// insert into Dir
 	dirId := uniqString()
 
-	isRoot := info.FatherDirId == info.Name
+	isRoot := info.FatherDirId == info.Owner
 
 	stmt, err := DB.Prepare(`
 				insert into 

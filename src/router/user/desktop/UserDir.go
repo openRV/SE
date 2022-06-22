@@ -28,7 +28,7 @@ func UserDir(c *gin.Context) {
 
 	resDir.DirId = username
 	resDir.DirName = dir.Name
-	resDir.Subdir = fillinDir(dir.Data)
+	resDir.Subdir = fillinDir(dir.Data[0].Subdir)
 
 	res := []desktop.Dir{resDir}
 
