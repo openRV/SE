@@ -49,7 +49,7 @@ CREATE TABLE Users(
     userName VARCHAR not NULL PRIMARY KEY,
     password VARCHAR not NULL,
     registDate VARCHAR,
-    role CHAR(5),--区分管理员与普通用户
+    role VARCHAR,--区分管理员与普通用户
     avatar VARCHAR
 );
 
