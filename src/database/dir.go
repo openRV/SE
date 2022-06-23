@@ -101,7 +101,7 @@ func UserDir(id string, root bool) UserDirRet {
 	stmt, err := DB.Prepare(`
 				select subId
 				from Tree
-				where dirId = ? AND root = ? AND subType = ?
+				where dirId = $1 AND root = $2 AND subType = $3
 			`)
 	if err != nil {
 		fmt.Println(err)

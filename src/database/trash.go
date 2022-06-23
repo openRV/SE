@@ -157,7 +157,7 @@ func EmptyTrash(info EmptyTrashInfo) EmptyTrashRes {
 }
 
 func Trash(info TrashInfo) TrashRes {
-	stmt, err := DB.Prepare("select itemId , deleteDate from Trash where itemType == $1 AND owner == $2")
+	stmt, err := DB.Prepare("select itemId , deleteDate from Trash where itemType = $1 AND owner = $2")
 	if err != nil {
 		fmt.Println(err)
 		return TrashRes{Success: false, Msg: "database error"}
