@@ -16,7 +16,7 @@ func Rename(c *gin.Context) {
 
 	docsId := json["docsId"].(string)
 	newName := json["newName"].(string)
-	isDir := json["isDir"].(string) == "true"
+	isDir := json["isDir"].(bool)
 	username := c.Request.Header.Get("Username")
 
 	var info database.RenameInfo

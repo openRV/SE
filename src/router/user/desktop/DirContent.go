@@ -29,9 +29,13 @@ func DirContent(c *gin.Context) {
 	res := database.DirContent(info)
 	if !res.Success {
 		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: res.Msg})
+		c.Abort()
 	}
 
-	num := len(res.Data)
+	numDir := len(res.Data.Dir)
+	numDoc := len(res.Data.Docs)
+
+	num := numDir + numDoc
 	var result desktop.DirContentResult
 	result.Success = true
 	result.Total = num
@@ -51,7 +55,13 @@ func DirContent(c *gin.Context) {
 	}
 
 	for i := from; i < to; i += 1 {
-		result.Data = append(result.Data, res.Data[i])
+
+		if i >= numDir {
+			result.Data.Docs = append(result.Data.Docs, res.Data.Docs[i-numDir])
+		} else {
+			result.Data.Dir = append(result.Data.Dir, res.Data.Dir[i])
+		}
+
 	}
 
 	c.IndentedJSON(http.StatusOK, result)

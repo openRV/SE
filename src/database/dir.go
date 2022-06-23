@@ -63,9 +63,9 @@ type DirContentInfo struct {
 
 // DirContentRes 查询目录内容的返回结果
 type DirContentRes struct {
-	Success bool                     // 查询是否成功
-	Msg     string                   // 如果不成功， 填写封装后的错误信息
-	Data    []desktop.DirContentData // 递归表示目录下的内容
+	Success bool                   // 查询是否成功
+	Msg     string                 // 如果不成功， 填写封装后的错误信息
+	Data    desktop.DirContentData // 递归表示目录下的内容
 }
 
 // ImportFileInfo 导入文件所需的信息
@@ -326,11 +326,13 @@ func DirContent(info DirContentInfo) DirContentRes {
 		fmt.Println(err)
 		return DirContentRes{Success: false, Msg: "database error"}
 	}
-
+	var dirArray []Dir
+	var docArray []Doc
 	var result DirContentRes
 	for rows.Next() {
 		var dir Dir
 		var doc Doc
+
 		var subType string
 		var subId string
 		err = rows.Scan(&subType, &subId)
@@ -354,39 +356,51 @@ func DirContent(info DirContentInfo) DirContentRes {
 				fmt.Println(err)
 				return DirContentRes{Success: false, Msg: "database error"}
 			}
+			dirArray = append(dirArray, dir)
 		} else {
 			// 对于子文件，查询 Doc 获取文件信息
 			doc.DocsId = subId
 			doc.Author = info.Username
-			stmt1, err := DB.Prepare("select docsName , docsType , createDate , lastUpdate from Dir where docsId = ? AND author = ?")
+			stmt1, err := DB.Prepare("select docsName , createDate , lastUpdate from Doc where docsId = ? AND author = ?")
 			if err != nil {
 				fmt.Println(err)
 				return DirContentRes{Success: false, Msg: "database error"}
 			}
 			defer stmt1.Close()
-			err = stmt1.QueryRow(doc.DocsId, doc.Author).Scan(&doc.DocsName, &doc.DocsType, &doc.CreateDate, &doc.LastUpdate)
+			err = stmt1.QueryRow(doc.DocsId, doc.Author).Scan(&doc.DocsName, &doc.CreateDate, &doc.LastUpdate)
 			if err != nil {
 				fmt.Println(err)
 				return DirContentRes{Success: false, Msg: "database error"}
 			}
+			docArray = append(docArray, doc)
 		}
 
-		var data desktop.DirContentData
-		data.Dir.CreateDate = dir.CreateDate
-		data.Dir.DirId = dir.Id
-		data.Dir.DirName = dir.Name
-		data.Dir.LastView = dir.LastView
-		data.Dir.Owner = dir.Owner
-
-		data.Docs.Author = doc.Author
-		data.Docs.CreateDate = doc.CreateDate
-		data.Docs.DocsId = doc.DocsId
-		data.Docs.DocsName = doc.DocsName
-		data.Docs.DocsType = doc.DocsType
-		data.Docs.LastView = doc.LastUpdate
-
-		result.Data = append(result.Data, data)
 	}
+	var data desktop.DirContentData
+
+	for i := range dirArray {
+		data.Dir = append(data.Dir, desktop.DirListItem{
+			DirId:      dirArray[i].Id,
+			DirName:    dirArray[i].Name,
+			Owner:      dirArray[i].Owner,
+			CreateDate: dirArray[i].CreateDate,
+			LastView:   dirArray[i].LastView,
+		})
+	}
+
+	for i := range docArray {
+		data.Docs = append(data.Docs, desktop.DocsListItem{
+			DocsId:     docArray[i].DocsId,
+			DocsName:   docArray[i].DocsName,
+			Author:     docArray[i].Author,
+			CreateDate: docArray[i].CreateDate,
+			LastView:   docArray[i].LastUpdate,
+		})
+	}
+
+	result.Data = data
+	result.Success = true
+
 	return result
 
 }

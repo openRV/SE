@@ -30,5 +30,5 @@ func DocsContent(c *gin.Context) {
 	result.Success = true
 	result.Data.DocContent = res.Data
 
-	c.IndentedJSON(http.StatusOK, res)
+	c.IndentedJSON(http.StatusOK, result)
 }

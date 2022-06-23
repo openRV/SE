@@ -11,8 +11,6 @@ import (
 
 func EmptyTrash(c *gin.Context) {
 	// parse request
-	json := make(map[string]interface{})
-	c.BindJSON(&json)
 
 	username := c.Request.Header.Get("Username")
 

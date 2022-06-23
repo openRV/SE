@@ -29,7 +29,7 @@ func MainRouter(router *gin.Engine) {
 	open.GET("/openSearch", openPackage.OpenSearch)
 	open.GET("/hotdocs", openPackage.HotOpenDocs)
 
-	user.GET("/userdir", userPackageDesktop.UserDir)
+	user.GET("/dir", userPackageDesktop.UserDir)
 	user.POST("/newdir", userPackageDesktop.NewDir)
 	user.POST("/newfile", userPackageDesktop.NewDoc)
 	user.POST("/setvisibility", userPackageDesktop.SetVisibility)
@@ -37,12 +37,13 @@ func MainRouter(router *gin.Engine) {
 	user.POST("/movefile", userPackageDesktop.MoveDoc)
 	user.POST("/rename", userPackageEdit.Rename)
 	user.DELETE("/deleteitem", userPackageDesktop.DeleteItem)
+	user.DELETE("/emptytrash", userPackageDesktop.EmptyTrash)
 	user.GET("/trash", userPackageDesktop.Trash)
 	user.GET("/dircontent", userPackageDesktop.DirContent)
 	user.GET("/lastview", userPackageDesktop.LastView)
 	user.GET("/usersearch", userPackageDesktop.UserSearch)
 	user.GET("/readcontent", userPackageEdit.DocsContent)
-	user.GET("/writecontent", userPackageEdit.WriteDoc)
+	user.POST("/writecontent", userPackageEdit.WriteDoc)
 	user.POST("/importfile", userPackageDesktop.ImportFile)
 
 	admin.GET("/userlist", adminPackage.UserList)

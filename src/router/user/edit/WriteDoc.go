@@ -11,6 +11,7 @@ import (
 
 func WriteDoc(c *gin.Context) {
 	// parse request
+
 	json := make(map[string]interface{})
 	c.BindJSON(&json)
 
@@ -31,7 +32,7 @@ func WriteDoc(c *gin.Context) {
 	}
 
 	var result edit.WriteDocsResult
-	res.Success = true
+	result.Success = true
 
 	c.IndentedJSON(http.StatusOK, result)
 }

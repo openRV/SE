@@ -399,7 +399,7 @@ func Rename(info RenameInfo) RenameRet {
 
 func LastView(info LastViewInfo) LastViewRes {
 	stmt, err := DB.Prepare(`
-				select docsId , docsName , createDate , docsType , viewCounts , lastUpdate
+				select docsId , docsName , createDate , viewCounts , lastUpdate
 				from Doc 
 				where author = ?
 				order by lastUpdate desc
@@ -419,7 +419,7 @@ func LastView(info LastViewInfo) LastViewRes {
 	var result LastViewRes
 	for rows.Next() {
 		var doc Doc
-		err = rows.Scan(&doc.DocsId, &doc.DocsName, &doc.CreateDate, &doc.DocsType, &doc.ViewCounts, &doc.LastUpdate)
+		err = rows.Scan(&doc.DocsId, &doc.DocsName, &doc.CreateDate, &doc.ViewCounts, &doc.LastUpdate)
 		if err != nil {
 			fmt.Println(err)
 			return LastViewRes{Success: false, Msg: "database error"}
@@ -505,15 +505,8 @@ func DocsContent(info DocsContentInfo) DocsContentRes {
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query(info.Id, info.Username)
-	if err != nil {
-		fmt.Println(err)
-		return DocsContentRes{Success: false, Msg: "database error"}
-	}
-	defer rows.Close()
-
 	var data []byte
-	err = rows.Scan(&data)
+	err = stmt.QueryRow(info.Id, info.Username).Scan(&data)
 	if err != nil {
 		fmt.Println(err)
 		return DocsContentRes{Success: false, Msg: "database error"}
@@ -523,17 +516,18 @@ func DocsContent(info DocsContentInfo) DocsContentRes {
 }
 
 func WriteDocs(info WriteDocsInfo) WriteDocsRes {
-	stmt, err := DB.Prepare("update Doc set docsFile = ? where docsId = ? AND author = ?")
+	stmt, err := DB.Prepare("update Doc set docsFile = ? , lastUpdate = ? where docsId = ? AND author = ?")
 	if err != nil {
 		fmt.Println(err)
 		return WriteDocsRes{Success: false, Msg: "database error"}
 	}
 
-	_, err = stmt.Exec([]byte(info.Content), info.Id, info.Username)
+	_, err = stmt.Exec([]byte(info.Content), time.Now().Format("2006-01-12 12:13:14"), info.Id, info.Username)
 	if err != nil {
 		fmt.Println(err)
 		return WriteDocsRes{Success: false, Msg: "database error"}
 	}
+
 	return WriteDocsRes{Success: true}
 }
 

@@ -42,6 +42,11 @@ type TrashRes struct {
 	Data    []TrashData
 }
 
+type Item struct {
+	ItemType string
+	Id       string
+}
+
 func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 
 	// get item's type doc or dir
@@ -104,6 +109,9 @@ func EmptyTrash(info EmptyTrashInfo) EmptyTrashRes {
 		fmt.Println(err)
 		return EmptyTrashRes{Success: false, Msg: "database error"}
 	}
+
+	var item []Item
+
 	for rows.Next() {
 		var itemType string
 		var itemId string
@@ -113,20 +121,35 @@ func EmptyTrash(info EmptyTrashInfo) EmptyTrashRes {
 			fmt.Println(err)
 			return EmptyTrashRes{Success: false, Msg: "database error"}
 		}
-		if itemType == "doc" {
-			stmt, err = DB.Prepare("delete from Doc where docsId = ? AND author = ?")
+
+		item = append(item, Item{ItemType: itemType, Id: itemId})
+	}
+
+	for i := range item {
+		if item[i].ItemType == "doc" {
+			stmt1, err := DB.Prepare("delete from Doc where docsId = ? AND author = ?")
 			if err != nil {
 				fmt.Println(err)
 				return EmptyTrashRes{Success: false, Msg: "database error"}
 			}
-			_, err = stmt.Exec(itemId, info.Username)
+			_, err = stmt1.Exec(item[i].Id, info.Username)
+			if err != nil {
+				fmt.Println(err)
+				return EmptyTrashRes{Success: false, Msg: "database error"}
+			}
+
+			stmt1, err = DB.Prepare("delete from Trash where itemId = ? AND owner = ?")
+			if err != nil {
+				fmt.Println(err)
+				return EmptyTrashRes{Success: false, Msg: "database error"}
+			}
+			_, err = stmt1.Exec(item[i].Id, info.Username)
 			if err != nil {
 				fmt.Println(err)
 				return EmptyTrashRes{Success: false, Msg: "database error"}
 			}
 
 		}
-
 	}
 
 	return EmptyTrashRes{Success: true}

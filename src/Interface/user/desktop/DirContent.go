@@ -11,14 +11,14 @@ type DirContentParams struct {
 }
 
 type DirContentData struct {
-	Dir  DirListItem  `json:"dir"`
-	Docs DocsListItem `json:"docs"`
+	Dir  []DirListItem  `json:"dir"`
+	Docs []DocsListItem `json:"docs"`
 }
 
 type DirContentResult struct {
-	Success bool             `json:"success"`
-	Total   int              `json:"total"`
-	Data    []DirContentData `json:"data"`
+	Success bool           `json:"success"`
+	Total   int            `json:"total"`
+	Data    DirContentData `json:"data"`
 }
 
 type DirContent struct {
