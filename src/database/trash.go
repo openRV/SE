@@ -57,7 +57,7 @@ func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 
 	if subType == "doc" {
 		// insert into trash
-		stmt, err := DB.Prepare("insert into Trash(itemType , itemId , owner , deleteDate) values (?,?,?,?)")
+		stmt, err := DB.Prepare("insert into Trash(itemType , itemId , owner , deleteDate) values ($1,$2,$3,$4)")
 		if err != nil {
 			fmt.Println(err)
 			return DeleteItemRes{Success: false, Msg: "database error"}
@@ -69,7 +69,7 @@ func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 		}
 
 		// delete from share
-		stmt, err = DB.Prepare("delete from Share where docId = ?")
+		stmt, err = DB.Prepare("delete from Share where docId = $1")
 		if err != nil {
 			fmt.Println(err)
 			return DeleteItemRes{Success: false, Msg: "database error"}
@@ -83,7 +83,7 @@ func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 	}
 
 	// delete from tree
-	stmt, err := DB.Prepare("delete from Tree where subType = ? AND subId = ?")
+	stmt, err := DB.Prepare("delete from Tree where subType = $1 AND subId = $2")
 	if err != nil {
 		fmt.Println(err)
 		return DeleteItemRes{Success: false, Msg: "database error"}
@@ -99,7 +99,7 @@ func DeleteItem(info DeleteItemInfo) DeleteItemRes {
 
 func EmptyTrash(info EmptyTrashInfo) EmptyTrashRes {
 
-	stmt, err := DB.Prepare("select itemType , itemId from Trash where owner = ?")
+	stmt, err := DB.Prepare("select itemType , itemId from Trash where owner = $1")
 	if err != nil {
 		fmt.Println(err)
 		return EmptyTrashRes{Success: false, Msg: "database error"}
@@ -127,7 +127,7 @@ func EmptyTrash(info EmptyTrashInfo) EmptyTrashRes {
 
 	for i := range item {
 		if item[i].ItemType == "doc" {
-			stmt1, err := DB.Prepare("delete from Doc where docsId = ? AND author = ?")
+			stmt1, err := DB.Prepare("delete from Doc where docsId = $1 AND author = $2")
 			if err != nil {
 				fmt.Println(err)
 				return EmptyTrashRes{Success: false, Msg: "database error"}
@@ -138,7 +138,7 @@ func EmptyTrash(info EmptyTrashInfo) EmptyTrashRes {
 				return EmptyTrashRes{Success: false, Msg: "database error"}
 			}
 
-			stmt1, err = DB.Prepare("delete from Trash where itemId = ? AND owner = ?")
+			stmt1, err = DB.Prepare("delete from Trash where itemId = $1 AND owner = $2")
 			if err != nil {
 				fmt.Println(err)
 				return EmptyTrashRes{Success: false, Msg: "database error"}
@@ -157,7 +157,7 @@ func EmptyTrash(info EmptyTrashInfo) EmptyTrashRes {
 }
 
 func Trash(info TrashInfo) TrashRes {
-	stmt, err := DB.Prepare("select itemId , deleteDate from Trash where itemType == ? AND owner == ?")
+	stmt, err := DB.Prepare("select itemId , deleteDate from Trash where itemType == $1 AND owner == $2")
 	if err != nil {
 		fmt.Println(err)
 		return TrashRes{Success: false, Msg: "database error"}

@@ -146,7 +146,7 @@ func fillinSubDir(dir *Dir) UserDirRet {
 	stmt, err := DB.Prepare(`
 				select subId
 				from Tree
-				where dirId = ? AND subType = ?
+				where dirId = $1 AND subType = $2
 			`)
 	if err != nil {
 		fmt.Println(err)
@@ -188,7 +188,7 @@ func fillinDirInfo(dir *Dir) UserDirRet {
 	stmt, err := DB.Prepare(`
 				select dirName , owner , createDate , lastView
 				from Dir
-				where dirId = ?
+				where dirId = $1
 			`)
 	if err != nil {
 		fmt.Println(err)
@@ -218,7 +218,7 @@ func NewDir(info NewDirInfo) NewDirRes {
 				insert into 
 				Dir (dirId , dirName , owner , createDate , lastView) 
 				values
-				(? , ? , ? , ? , ?)
+				($1 , $2 , $3 , $4 , $5)
 			`)
 	if err != nil {
 		fmt.Println(err)
@@ -238,7 +238,7 @@ func NewDir(info NewDirInfo) NewDirRes {
 				insert into 
 				Tree (dirId , root , subType , subId)
 				values
-				(? , ? , ? , ?)
+				($1 , $2 , $3 , $4)
 			`)
 	if err != nil {
 		fmt.Println(err)
@@ -287,8 +287,8 @@ func MoveDir(info MoveDirInfo) MoveDirRet {
 	stmt, err := DB.Prepare(`
 				update 
 				Tree
-				set dirId = ? , root = ?
-				where subId = ? AND subType = ? 
+				set dirId = $1 , root = $2
+				where subId = $3 AND subType = $4 
 			`)
 	if err != nil {
 		fmt.Println(err)
@@ -314,7 +314,7 @@ func MoveDir(info MoveDirInfo) MoveDirRet {
 // @result  _  DirContentRes  "获取文件的封装后的返回结果"
 func DirContent(info DirContentInfo) DirContentRes {
 	// 在 Tree 表中查询当前目录下的子目录及文件的类型和 id
-	stmt, err := DB.Prepare("select subType , subId from Tree where dirId = ?")
+	stmt, err := DB.Prepare("select subType , subId from Tree where dirId = $1")
 	if err != nil {
 		fmt.Println(err)
 		return DirContentRes{Success: false, Msg: "database error"}
@@ -345,7 +345,7 @@ func DirContent(info DirContentInfo) DirContentRes {
 			// 对于子文件夹，查询 Dir 获取目录信息
 			dir.Id = subId
 			dir.Owner = info.Username
-			stmt1, err := DB.Prepare("select dirName , createDate , lastView from Dir where dirId = ? AND owner = ?")
+			stmt1, err := DB.Prepare("select dirName , createDate , lastView from Dir where dirId = $1 AND owner = $2")
 			if err != nil {
 				fmt.Println(err)
 				return DirContentRes{Success: false, Msg: "database error"}
@@ -361,7 +361,7 @@ func DirContent(info DirContentInfo) DirContentRes {
 			// 对于子文件，查询 Doc 获取文件信息
 			doc.DocsId = subId
 			doc.Author = info.Username
-			stmt1, err := DB.Prepare("select docsName , createDate , lastUpdate from Doc where docsId = ? AND author = ?")
+			stmt1, err := DB.Prepare("select docsName , createDate , lastUpdate from Doc where docsId = $1 AND author = $2")
 			if err != nil {
 				fmt.Println(err)
 				return DirContentRes{Success: false, Msg: "database error"}
@@ -415,7 +415,7 @@ func ImportFile(info ImportFileInfo) ImportFileRes {
 	// 在 Doc 中插入新导入的文件
 	stmt, err := DB.Prepare(`insert into Doc 
 							(docsId , docsName , dodcsFile , author , createDate , lastUpdate , DocsType , viewCounts , open)
-							values (?,?,?,?,?,?,?,?)
+							values ($1,$2,$3,$4,$5,$6,$7,$8)
 							`)
 	if err != nil {
 		fmt.Println(err)
@@ -433,7 +433,7 @@ func ImportFile(info ImportFileInfo) ImportFileRes {
 	// 在 Tree 中插入新文件在目录中的位置
 	stmt, err = DB.Prepare(`
 				insert into Tree(dirId , root , subType , subId) 
-				values (?,?,?,?)
+				values ($1,$2,$3,$4)
 							`)
 	if err != nil {
 		fmt.Println(err)

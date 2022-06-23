@@ -134,8 +134,8 @@ func OpenSearch(search OpenDocSearchInfo) ([]Doc, string) {
 					docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
 					from 
 					Doc where 
-					author like ?
-					AND open = ?
+					author like $1
+					AND open = $2
 					`
 			rows, err := DB.Query(stmt, fmt.Sprintf("%%%s%%", search.Author), true)
 			if err != nil {
@@ -157,8 +157,8 @@ func OpenSearch(search OpenDocSearchInfo) ([]Doc, string) {
 					docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
 					from Doc 
 					where 
-					docsName like ?
-					AND open = ?
+					docsName like $1
+					AND open = $2
 					`
 			rows, err := DB.Query(stmt, fmt.Sprintf("%%%s%%", search.Title), true)
 			if err != nil {
@@ -180,9 +180,9 @@ func OpenSearch(search OpenDocSearchInfo) ([]Doc, string) {
 					docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
 					from Doc 
 					where 
-					docsName like ?
-					AND author like ?
-					AND open = ?
+					docsName like $1
+					AND author like $2
+					AND open = $3
 					`
 			rows, err := DB.Query(stmt, fmt.Sprintf("%%%s%%", search.Title), fmt.Sprintf("%%%s%%", search.Author), true)
 			if err != nil {
@@ -207,7 +207,7 @@ func HotOpenDocs() ([]Doc, string) {
 
 	stmt := `select 
 				docsId , docsName , author , createDate , lastUpdate , docsType , viewCounts 
-				from Doc where open = ?
+				from Doc where open = $1
 				order by viewCounts desc
 				`
 	rows, err := DB.Query(stmt, true)
@@ -237,7 +237,7 @@ func NewDoc(info NewDocInfo) NewDocRes {
 				insert into
 				Doc (docsId ,docsName , author , createDate , lastUpdate , viewCounts , open)
 				values
-				(? , ? , ? , ? , ? , ? , ?)
+				($1 , $2 , $3 , $4 , $5 , $6 , $7)
 			`)
 	if err != nil {
 		fmt.Println(err)
@@ -257,7 +257,7 @@ func NewDoc(info NewDocInfo) NewDocRes {
 				insert into
 				Tree (dirId , root , subType , subId)
 				values
-				(? , ? , ? , ?)
+				($1 , $2 , $3 , $4)
 			`)
 	if err != nil {
 		fmt.Println(err)
@@ -302,8 +302,8 @@ func SetVisibility(info SetVisInfo) SetVizInfoRet {
 	stmt, err := DB.Prepare(`
 				update 
 				Doc
-				set open = ?
-				where docsId = ? AND author = ?
+				set open = $1
+				where docsId = $2 AND author = $3
 			`)
 	if err != nil {
 		fmt.Println(err)
@@ -326,8 +326,8 @@ func MoveDoc(info MoveDocInfo) MoveDocRet {
 	stmt, err := DB.Prepare(`
 				update 
 				Tree
-				set dirId = ? , root = ?
-				where subId = ? AND subType = ? 
+				set dirId = $1 , root = $2
+				where subId = $3 AND subType = $4
 			`)
 	if err != nil {
 		fmt.Println(err)
@@ -352,8 +352,8 @@ func Rename(info RenameInfo) RenameRet {
 		stmt, err := DB.Prepare(`
 				update 
 				Doc
-				set docsName = ?
-				where docsId = ? AND author = ? 
+				set docsName = $1
+				where docsId = $2 AND author = $3 
 			`)
 		if err != nil {
 			fmt.Println(err)
@@ -372,8 +372,8 @@ func Rename(info RenameInfo) RenameRet {
 		stmt, err := DB.Prepare(`
 				update 
 				Dir
-				set dirName = ?
-				where dirId = ? AND owner = ? 
+				set dirName = $1
+				where dirId = $2 AND owner = $3 
 			`)
 		if err != nil {
 			fmt.Println(err)
@@ -396,7 +396,7 @@ func LastView(info LastViewInfo) LastViewRes {
 	stmt, err := DB.Prepare(`
 				select docsId , docsName , createDate , viewCounts , lastUpdate
 				from Doc 
-				where author = ?
+				where author = $1
 				order by lastUpdate desc
 			`)
 	if err != nil {
@@ -438,7 +438,7 @@ func UserSearch(info UserSearchInfo) UserSearchRes {
 		stmt, err := DB.Prepare(`
 					select docsId , docsName , createDate , lastUpdate , viewCounts
 					from Doc
-					where author = ? AND author like ?
+					where author = $1 AND author like $2
 				`)
 		if err != nil {
 			fmt.Println(err)
@@ -465,7 +465,7 @@ func UserSearch(info UserSearchInfo) UserSearchRes {
 		stmt, err := DB.Prepare(`
 					select docsId , docsName , createDate , lastUpdate , viewCounts
 					from Doc
-					where author = ? AND docsName like ?
+					where author = $1 AND docsName like $2
 				`)
 		if err != nil {
 			fmt.Println(err)
@@ -495,7 +495,7 @@ func UserSearch(info UserSearchInfo) UserSearchRes {
 }
 
 func DocsContent(info DocsContentInfo) DocsContentRes {
-	stmt, err := DB.Prepare("select docsFile from Doc where docsId = ? AND author = ?")
+	stmt, err := DB.Prepare("select docsFile from Doc where docsId = $1 AND author = $2")
 	if err != nil {
 		fmt.Println(err)
 		return DocsContentRes{Success: false, Msg: "database error"}
@@ -513,7 +513,7 @@ func DocsContent(info DocsContentInfo) DocsContentRes {
 }
 
 func WriteDocs(info WriteDocsInfo) WriteDocsRes {
-	stmt, err := DB.Prepare("update Doc set docsFile = ? , lastUpdate = ? where docsId = ? AND author = ?")
+	stmt, err := DB.Prepare("update Doc set docsFile = $1 , lastUpdate = $2 where docsId = $3 AND author = $4")
 	if err != nil {
 		fmt.Println(err)
 		return WriteDocsRes{Success: false, Msg: "database error"}
