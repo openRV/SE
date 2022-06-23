@@ -43,7 +43,7 @@ type UpdateRet struct {
 
 func SearchUser(user User) UserSearchRet {
 
-	stmt, err := DB.Prepare("select password , registDate , role , avatar from User where userName = ?")
+	stmt, err := DB.Prepare("select password , registDate , role , avatar from Users where userName = ?")
 	if err != nil {
 		fmt.Println(err)
 		return UserSearchRet{
@@ -74,7 +74,7 @@ func SearchUser(user User) UserSearchRet {
 
 func RegisterUser(user User) RegisterRet {
 
-	stmt, err := DB.Prepare("select * from User where userName = ?")
+	stmt, err := DB.Prepare("select * from Users where userName = ?")
 	if err != nil {
 		fmt.Println(err)
 		return RegisterRet{
@@ -93,7 +93,7 @@ func RegisterUser(user User) RegisterRet {
 		}
 	}
 
-	stmt, err = DB.Prepare("insert into User(userName , password , registDate , role , avatar) values (?,?,?,?,?)")
+	stmt, err = DB.Prepare("insert into Users(userName , password , registDate , role , avatar) values (?,?,?,?,?)")
 	if err != nil {
 		fmt.Println(err)
 		return RegisterRet{
@@ -136,7 +136,7 @@ func RegisterUser(user User) RegisterRet {
 }
 
 func DeteleUser(userName string) DeleteRet {
-	stmt, err := DB.Prepare("select * from User where userName = ?")
+	stmt, err := DB.Prepare("select * from Users where userName = ?")
 	if err != nil {
 		fmt.Println(err)
 		return DeleteRet{
@@ -155,7 +155,7 @@ func DeteleUser(userName string) DeleteRet {
 		}
 	}
 
-	stmt, err = DB.Prepare("delete from User where userName = ?")
+	stmt, err = DB.Prepare("delete from Users where userName = ?")
 	_, err = stmt.Exec(userName)
 
 	if err != nil {
@@ -171,7 +171,7 @@ func DeteleUser(userName string) DeleteRet {
 }
 
 func GetSelfInfo(userName string) SelfDataRet {
-	stmt, err := DB.Prepare("select * from User where userName = ?")
+	stmt, err := DB.Prepare("select * from Users where userName = ?")
 	if err != nil {
 		fmt.Println(err)
 		return SelfDataRet{
@@ -200,7 +200,7 @@ func GetSelfInfo(userName string) SelfDataRet {
 }
 
 func UpadateInfo(oldUserName string, params index.SetInfoParams) UpdateRet {
-	stmt, err := DB.Prepare("update User set username = ?,password = ?,avatar = ? where userName = ?")
+	stmt, err := DB.Prepare("update Users set username = ?,password = ?,avatar = ? where userName = ?")
 	if err != nil {
 		fmt.Println(err)
 		return UpdateRet{
@@ -224,7 +224,7 @@ func UpadateInfo(oldUserName string, params index.SetInfoParams) UpdateRet {
 }
 
 func RegisterAdmin(userName string, password string) RegisterRet {
-	stmt, err := DB.Prepare("insert into User(userName , password , registDate , role , avatar) values (?,?,?,'admin',?)")
+	stmt, err := DB.Prepare("insert into Users(userName , password , registDate , role , avatar) values (?,?,?,'admin',?)")
 	if err != nil {
 		fmt.Println(err)
 		return RegisterRet{
@@ -252,7 +252,7 @@ type AllDataRet struct {
 }
 
 func GetAllUser() AllDataRet {
-	stmt, err := DB.Prepare("select userName,password from User where role='user'")
+	stmt, err := DB.Prepare("select userName,password from Users where role='user'")
 	if err != nil {
 		fmt.Println(err)
 		return AllDataRet{Msg: "database err"}
@@ -289,7 +289,7 @@ type UserNumRet struct {
 }
 
 func GetUserNum() UserNumRet {
-	row, err := DB.Query("select userName from User where role ='user'")
+	row, err := DB.Query("select userName from Users where role ='user'")
 	if err != nil {
 		fmt.Println(err)
 		return UserNumRet{
@@ -317,7 +317,7 @@ type NewUserNumRet struct {
 }
 
 func GetNewUserNum() NewUserNumRet {
-	rows, err := DB.Query("select registDate from User")
+	rows, err := DB.Query("select registDate from Users")
 	if err != nil {
 		fmt.Println(err)
 		return NewUserNumRet{

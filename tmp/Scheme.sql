@@ -1,7 +1,7 @@
 CREATE TABLE Doc(
     docsId VARCHAR not NULL PRIMARY KEY,
     docsName VARCHAR not NULL,
-    docsFile blob,
+    docsFile bytea,
     author VARCHAR,
     createDate VARCHAR,
     lastUpdate VARCHAR,
@@ -45,7 +45,7 @@ CREATE TABLE Share(
     userId VARCHAR not NULL
 );
 
-CREATE TABLE User(
+CREATE TABLE Users(
     userName VARCHAR not NULL PRIMARY KEY,
     password VARCHAR not NULL,
     registDate VARCHAR,
