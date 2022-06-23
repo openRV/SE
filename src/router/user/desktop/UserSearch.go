@@ -31,6 +31,7 @@ func UserSearch(c *gin.Context) {
 	res := database.UserSearch(info)
 	if !res.Success {
 		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: res.Msg})
+		return
 	}
 
 	num := len(res.Data)

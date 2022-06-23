@@ -5,11 +5,6 @@ import (
 	"time"
 )
 
-// type DocSearchInfo struct {
-// 	Type    string // Title | Author
-// 	Content string
-// }
-
 type OpenDocSearchInfo struct {
 	Title  string
 	Author string
@@ -441,7 +436,7 @@ func UserSearch(info UserSearchInfo) UserSearchRes {
 	if info.SearchType == "Author" {
 
 		stmt, err := DB.Prepare(`
-					select docsId , docsName , createDate , lastUpdate , docsType , viewCounts
+					select docsId , docsName , createDate , lastUpdate , viewCounts
 					from Doc
 					where author = ? AND author like ?
 				`)
@@ -458,7 +453,8 @@ func UserSearch(info UserSearchInfo) UserSearchRes {
 
 		for rows.Next() {
 			var doc Doc
-			err = rows.Scan(&doc.DocsId, &doc.DocsName, &doc.CreateDate, &doc.LastUpdate, &doc.DocsType, &doc.ViewCounts)
+			doc.Author = info.Username
+			err = rows.Scan(&doc.DocsId, &doc.DocsName, &doc.CreateDate, &doc.LastUpdate, &doc.ViewCounts)
 			if err != nil {
 				fmt.Println(err)
 				return UserSearchRes{Success: false, Msg: "database error"}
@@ -467,7 +463,7 @@ func UserSearch(info UserSearchInfo) UserSearchRes {
 		}
 	} else {
 		stmt, err := DB.Prepare(`
-					select docsId , docsName , createDate , lastUpdate , docsType , viewCounts
+					select docsId , docsName , createDate , lastUpdate , viewCounts
 					from Doc
 					where author = ? AND docsName like ?
 				`)
@@ -483,7 +479,8 @@ func UserSearch(info UserSearchInfo) UserSearchRes {
 		}
 		for rows.Next() {
 			var doc Doc
-			err = rows.Scan(&doc.DocsId, &doc.DocsName, &doc.CreateDate, &doc.LastUpdate, &doc.DocsType, &doc.ViewCounts)
+			doc.Author = info.Username
+			err = rows.Scan(&doc.DocsId, &doc.DocsName, &doc.CreateDate, &doc.LastUpdate, &doc.ViewCounts)
 			if err != nil {
 				fmt.Println(err)
 				return UserSearchRes{Success: false, Msg: "database error"}
