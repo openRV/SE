@@ -1,5 +1,5 @@
 // @Title dir.go
-// @Desctiption 操作数据库中 Dir 表相关的函数及相关的数据类型
+// @Description 操作数据库中 Dir 表相关的函数及相关的数据类型
 // @Author 杜沛然 ${DATE} ${TIME}
 
 package database
