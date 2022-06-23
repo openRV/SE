@@ -5,7 +5,7 @@ title = "this is the title"
     type = "postgres"      # 数据库类型，默认 sqlite3
     sqlSchemeInit = "./tmp/Scheme.sql" # 初始化数据库的文件
     sqlSchemeCheck = "./tmp/SchemeCheck.sql" # 检查数据库完整性的文件
-    connStr ="host=127.0.0.1 port=5432 dbname=test user=test password=123456 sslmode=disable"
+    connStr ="host=10.131.194.114 port=5432 dbname=test user=test password=123456 sslmode=disable"
 
 [log]
     path = "./tmp/SE.log" # 默认日志文件路径
