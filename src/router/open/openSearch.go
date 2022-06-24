@@ -1,3 +1,7 @@
+// @Title openSearch.go
+// @Description 关于 搜索公开文章功能 的实现
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package open
 
 import (

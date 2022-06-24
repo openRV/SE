@@ -1,3 +1,7 @@
+// @Title login.go
+// @Description 关于 登录功能 的实现
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package open
 
 import (
