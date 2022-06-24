@@ -79,6 +79,7 @@ func GetIncrease() DailyIncreaseRet {
 			date.Num = 0
 			M_data = append(M_data, date)
 		}
+		//初始化不存在标志。
 		M_nonExist := false
 		for i, M_element := range M_data {
 			if M_element.Month == M_date {
@@ -87,9 +88,10 @@ func GetIncrease() DailyIncreaseRet {
 				break
 			}
 			if i == len(M_data)-1 {
+				//如果遍历到数组尾，仍未发现对应日期，则置不存在标志为true
 				M_nonExist = true
 			}
-
+			//如果不存在，则在数组尾添加一个对应元素
 			if M_nonExist {
 				tmp2 := index.M_increaseData{
 					Month: M_date,
@@ -99,7 +101,7 @@ func GetIncrease() DailyIncreaseRet {
 			}
 		}
 	}
-
+	//返回结果
 	return DailyIncreaseRet{
 		Success: true,
 		D_Data:  D_data,
