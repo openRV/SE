@@ -1,3 +1,7 @@
+// @Title utils.go
+// @Description 关于统一错误返回、抽象接口的数据类型
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package Interface
 
 // 统一错误返回
