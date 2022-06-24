@@ -1,46 +1,78 @@
 # SE
 
+项目采用二进制形式发布。
+系统支持 Linux Windows MacOS
+
 ## 启动流程
 
 - 编译时从 const.go 中获取配置文件地址
 - 启动时从 const.go 中指定的配置文件路径中读取配置文件 (SE.toml)
 - 根据 SE.toml 的内容依次初始化 配置文件 日志 数据库
 
-## 数据库表
+## 运行方法
 
-### User
+### 运行环境
 
-/user/desktop
-1            /deleteitem
-1            /dircontent
-            /downloadlog
-1            /emptytrash
-1            /importfile
-1            /lastview
-1            /movedir
-1            /movefile
-1            /newdir
-1            /newfile
-1            /setvisibility
-            /sharewithme
-1            /trash
-0.5            /userdir
-1            /usersearch
-/user/edit
-            /downloadfile
- 1           /rename
- 1          /readcontent
- 1          /writecontent
-/open   
-1        /hotdocs                   
-1        /login
-1        /opensearch
-1        /register
-/admin
-1        /deleteuser
-1        /newadmin
-1        /setinfo
-1        /selfinfo
-1        /storageinfo
-1        /userinfo
-1        /userlist
+```shell
+git clone https://github.com/openRV/SE.git
+cd SE
+
+```
+
+确认系统中 golang 的版本（推荐17）
+修改（或者不修改）src/const.go 中的路径，指向配置文件的地址（默认为 tmp/SE.toml)
+修改配置文件（默认为 tmp/SE.toml) 中的参数，数据库的地址、端口、数据库名等
+在数据库中运行 tmp/Scheme.sql 脚本，以初始化数据库表
+
+在项目的根目录，执行： 
+
+```shell
+(linux)# go run src/*.go 
+```
+
+或者：
+
+```shell
+(windows)# cd src
+(windows)# go run ./
+```
+
+### 升级方法
+
+```
+git pull
+git checkout master 
+go run src/*.go
+```
+
+## 操作方法
+
+### 日志
+
+日志默认路径为 tmp/SE.log
+日志格式采用 json ，便于被其他程序读取
+
+### 配置文件
+
+配置文件默认路径为 tmp/SE.toml
+配置文件应遵循toml规范，且如下内容必须不为空
+
+```toml
+title = "template"
+
+[database]
+    path = "./tmp/SE.db"  # 数据库存储路径
+    type = "postgres"      # 数据库类型，默认 sqlite3
+    sqlSchemeInit = "./tmp/Scheme.sql" # 初始化数据库的文件
+    sqlSchemeCheck = "./tmp/SchemeCheck.sql" # 检查数据库完整性的文件
+    connStr ="host=127.0.0.1 port=5432 dbname=test user=test password=123456 sslmode=disable"
+
+[log]
+    path = "./tmp/SE.log" # 默认日志文件路径
+
+[server]
+    capcity = 500     # 令牌桶初始值及最大容量
+    quantum = 200     # 每秒新增请求数
+    key = "privatekey" # 用于生成token的密钥
+    period = 2 # expire time of token
+```
