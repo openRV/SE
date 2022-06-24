@@ -429,7 +429,7 @@ func ImportFile(info ImportFileInfo) ImportFileRes {
 		fmt.Println(err)
 		return ImportFileRes{Success: false, Msg: "database error"}
 	}
-
+aut
 	// 在 Tree 中插入新文件在目录中的位置
 	stmt, err = DB.Prepare(`
 				insert into Tree(dirId , root , subType , subId) 
