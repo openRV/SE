@@ -1,5 +1,5 @@
 // @Title dailyActive.go
-// @Description 统计日活跃人数及日/月新增人数
+// @Description 统计日活跃人数
 // @Author 矫晓佳 ${DATE} ${TIME}
 package database
 
