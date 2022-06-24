@@ -3,6 +3,7 @@ package admin
 import (
 	"SE/src/database"
 	"SE/src/interface/admin/index"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,9 @@ func UserInfo(c *gin.Context) {
 	if !(userNumRet.Success && newUserNumRet.Success && activeUserNumRet.Success) {
 		c.IndentedJSON(http.StatusOK, userNumRet.Msg+"\n"+newUserNumRet.Msg+"\n"+activeUserNumRet.Msg)
 	}
-
+	for _, element := range newUserNumRet.M_data {
+		fmt.Println(element.Month, element.Num)
+	}
 	c.IndentedJSON(http.StatusOK, index.UserInfoResult{
 		Success: true,
 		Data: index.UserInfoData{

@@ -317,7 +317,7 @@ type NewUserNumRet struct {
 }
 
 func GetNewUserNum() NewUserNumRet {
-	rows, err := DB.Query("select registDate from Users")
+	rows, err := DB.Query("select registDate from Users order by registDate")
 	if err != nil {
 		fmt.Println(err)
 		return NewUserNumRet{
@@ -328,6 +328,7 @@ func GetNewUserNum() NewUserNumRet {
 	defer rows.Close()
 	var D_data []index.D_UserIncreaseData
 	var M_data []index.M_UserIncreaseData
+
 	for rows.Next() {
 		var date string
 		rows.Scan(&date)
@@ -335,8 +336,8 @@ func GetNewUserNum() NewUserNumRet {
 		D_date := date[0:10]
 
 		if D_data == nil {
-			tmp := index.D_UserIncreaseData{Date: D_date, Num: 0}
-			D_data = append(D_data, tmp)
+			tmp1 := index.D_UserIncreaseData{Date: D_date, Num: 0}
+			D_data = append(D_data, tmp1)
 		}
 		D_nonExist := false
 		for i, D_element := range D_data {
@@ -349,29 +350,31 @@ func GetNewUserNum() NewUserNumRet {
 			}
 		}
 		if D_nonExist {
-			tmp := index.D_UserIncreaseData{Date: D_date, Num: 1}
-			D_data = append(D_data, tmp)
+			tmp2 := index.D_UserIncreaseData{Date: D_date, Num: 1}
+			D_data = append(D_data, tmp2)
 		}
 
 		M_date := date[0:7]
 
 		if M_data == nil {
-			tmp := index.M_UserIncreaseData{Month: M_date, Num: 0}
-			M_data = append(M_data, tmp)
+			tmp3 := index.M_UserIncreaseData{Month: M_date, Num: 0}
+			M_data = append(M_data, tmp3)
 		}
 		M_nonExist := false
-		for i, M_element := range M_data {
-			if M_element.Month == M_date {
+		for i, _ := range M_data {
+			if M_data[i].Month == M_date {
 				M_data[i].Num += 1
 				break
 			}
-			if i == len(D_data)-1 {
+			fmt.Println(i, len(M_data))
+			if i == len(M_data)-1 {
+
 				M_nonExist = true
 			}
 		}
 		if M_nonExist {
-			tmp := index.M_UserIncreaseData{Month: M_date, Num: 1}
-			M_data = append(M_data, tmp)
+			tmp4 := index.M_UserIncreaseData{Month: M_date, Num: 1}
+			M_data = append(M_data, tmp4)
 		}
 	}
 

@@ -12,8 +12,9 @@ import (
 func GetStorageInfo(c *gin.Context) {
 	var res index.StorageInfoResult
 
-	res.Data.UsingStorage = float32(database.GetAllDocSize() / 1048576)
-	res.Data.TotalStorage = 100
+	//res.Data.UsingStorage = float32(database.GetAllDocSize() / 1048576)
+	res.Data.UsingStorage = 1.25
+	res.Data.TotalStorage = 10
 
 	ret := database.GetIncrease()
 	if !ret.Success {

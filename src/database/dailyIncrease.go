@@ -76,20 +76,20 @@ func GetIncrease() DailyIncreaseRet {
 		if M_data == nil {
 			var date index.M_increaseData
 			date.Month = M_date
-			date.Num = 1
+			date.Num = 0
 			M_data = append(M_data, date)
-		} else {
-			M_nonExist := false
-			for i, M_element := range M_data {
-				if M_element.Month == M_date {
-					// M_element.Num += 1
-					M_data[i].Num += 1
-					break
-				}
-				if i == len(M_data)-1 {
-					M_nonExist = true
-				}
+		}
+		M_nonExist := false
+		for i, M_element := range M_data {
+			if M_element.Month == M_date {
+				// M_element.Num += 1
+				M_data[i].Num += 1
+				break
 			}
+			if i == len(M_data)-1 {
+				M_nonExist = true
+			}
+
 			if M_nonExist {
 				tmp2 := index.M_increaseData{
 					Month: M_date,
