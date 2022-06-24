@@ -1,9 +1,9 @@
 package desktop
 
 import (
-	"SE/src/Interface/user/desktop"
 	"SE/src/database"
-	comInterface "SE/src/interface"
+	cominterface "SE/src/interface"
+	"SE/src/interface/user/desktop"
 	"net/http"
 	"strconv"
 
@@ -29,7 +29,7 @@ func Trash(c *gin.Context) {
 
 	res := database.Trash(info)
 	if !res.Success {
-		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: res.Msg})
+		c.IndentedJSON(http.StatusOK, cominterface.ErrorRes{Success: false, Msg: res.Msg})
 		return
 	}
 

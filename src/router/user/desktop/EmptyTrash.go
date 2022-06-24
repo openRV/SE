@@ -1,9 +1,9 @@
 package desktop
 
 import (
-	"SE/src/Interface/user/desktop"
 	"SE/src/database"
-	comInterface "SE/src/interface"
+	cominterface "SE/src/interface"
+	"SE/src/interface/user/desktop"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +20,7 @@ func EmptyTrash(c *gin.Context) {
 
 	err := database.EmptyTrash(info)
 	if !err.Success {
-		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: err.Msg})
+		c.IndentedJSON(http.StatusOK, cominterface.ErrorRes{Success: false, Msg: err.Msg})
 		return
 	}
 

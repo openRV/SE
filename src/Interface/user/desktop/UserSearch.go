@@ -1,3 +1,7 @@
+// @Title UserSearch.go
+// @Description 关于 UserSearch 功能的 API 的参数、返回结果数据类型
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package desktop
 
 // 查找当前用户可见的文档

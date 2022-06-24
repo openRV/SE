@@ -1,3 +1,7 @@
+// @Title DeleteItem.go
+// @Description 关于 DeleteItem 功能的 API 的参数、返回结果数据类型
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package desktop
 
 // 删除 相当于移动到回收站

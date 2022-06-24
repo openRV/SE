@@ -1,3 +1,7 @@
+// @Title init.go
+// @Description 配置、数据库、log初始化相关的函数
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package init
 
 import (

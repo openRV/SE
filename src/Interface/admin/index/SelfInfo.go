@@ -1,3 +1,7 @@
+// @Title SelfInfo.go
+// @Description 关于 SelfInfo 功能的 API 的参数、返回结果数据类型
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package index
 
 // 查询自己的信息

@@ -1,3 +1,7 @@
+// @Title Interface.go
+// @Description 关于 文件、文件夹、文件树的数据类型
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package desktop
 
 // 定义文档列表项类型

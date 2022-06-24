@@ -2,7 +2,7 @@ package admin
 
 import (
 	"SE/src/database"
-	"SE/src/interface"
+	Interface "SE/src/interface"
 	"SE/src/interface/admin/index"
 	"github.com/gin-gonic/gin"
 	"net/http"

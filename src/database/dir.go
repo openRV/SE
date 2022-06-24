@@ -5,7 +5,7 @@
 package database
 
 import (
-	"SE/src/Interface/user/desktop"
+	"SE/src/interface/user/desktop"
 	"fmt"
 	"math/rand"
 	"time"

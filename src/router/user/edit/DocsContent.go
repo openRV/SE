@@ -1,9 +1,9 @@
 package edit
 
 import (
-	"SE/src/Interface/user/edit"
 	"SE/src/database"
-	comInterface "SE/src/interface"
+	cominterface "SE/src/interface"
+	"SE/src/interface/user/edit"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,7 +22,7 @@ func DocsContent(c *gin.Context) {
 
 	res := database.DocsContent(info)
 	if !res.Success {
-		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: res.Msg})
+		c.IndentedJSON(http.StatusOK, cominterface.ErrorRes{Success: false, Msg: res.Msg})
 		return
 	}
 

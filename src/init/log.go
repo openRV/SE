@@ -1,3 +1,7 @@
+// @Title log.go
+// @Description log初始化相关的函数
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package init
 
 import (

@@ -1,3 +1,6 @@
+// @Title conf.go
+// @Description 配置初始化相关的函数及相关的数据类型
+// @Author 杜沛然 ${DATE} ${TIME}
 package init
 
 import (

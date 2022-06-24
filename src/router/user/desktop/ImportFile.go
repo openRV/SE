@@ -1,9 +1,9 @@
 package desktop
 
 import (
-	"SE/src/Interface/user/desktop"
 	"SE/src/database"
-	comInterface "SE/src/interface"
+	cominterface "SE/src/interface"
+	"SE/src/interface/user/desktop"
 	"fmt"
 	"net/http"
 
@@ -20,7 +20,7 @@ func ImportFile(c *gin.Context) {
 
 	file, err := c.FormFile("file")
 	if err != nil {
-		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: "upload error"})
+		c.IndentedJSON(http.StatusOK, cominterface.ErrorRes{Success: false, Msg: "upload error"})
 		return
 	}
 
@@ -28,7 +28,7 @@ func ImportFile(c *gin.Context) {
 
 	f, err := file.Open()
 	if err != nil {
-		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: "upload error"})
+		c.IndentedJSON(http.StatusOK, cominterface.ErrorRes{Success: false, Msg: "upload error"})
 		return
 	}
 	defer f.Close()
@@ -38,7 +38,7 @@ func ImportFile(c *gin.Context) {
 		n, err := f.Read(buf)
 		if err != nil && err.Error() != "EOF" {
 			fmt.Println(err)
-			c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: "upload error"})
+			c.IndentedJSON(http.StatusOK, cominterface.ErrorRes{Success: false, Msg: "upload error"})
 			return
 		}
 		if n == 0 {
@@ -55,7 +55,7 @@ func ImportFile(c *gin.Context) {
 
 	res := database.ImportFile(info)
 	if !res.Success {
-		c.IndentedJSON(http.StatusOK, comInterface.ErrorRes{Success: false, Msg: res.Msg})
+		c.IndentedJSON(http.StatusOK, cominterface.ErrorRes{Success: false, Msg: res.Msg})
 	}
 
 	var result desktop.ImportFileResult
