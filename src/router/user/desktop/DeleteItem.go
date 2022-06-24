@@ -1,3 +1,7 @@
+// @Title DeleteItem.go
+// @Description 关于 删除文章/文件夹功能 的实现
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package desktop
 
 import (

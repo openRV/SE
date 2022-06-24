@@ -1,3 +1,7 @@
+// @Title DirContent.go
+// @Description 关于 获取文件夹内容功能 的实现
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package desktop
 
 import (

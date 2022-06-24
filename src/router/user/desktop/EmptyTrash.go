@@ -1,3 +1,7 @@
+// @Title EmptyTrash.go
+// @Description 关于 清空垃圾桶功能 的实现
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package desktop
 
 import (

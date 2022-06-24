@@ -1,3 +1,7 @@
+// @Title MoveDoc.go
+// @Description 关于 移动文章功能 的实现
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package desktop
 
 import (

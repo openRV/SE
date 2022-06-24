@@ -1,3 +1,7 @@
+// @Title Trash.go
+// @Description 关于 查看垃圾桶中的文件功能 的实现
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package desktop
 
 import (
