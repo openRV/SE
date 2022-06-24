@@ -1,3 +1,7 @@
+// @Title userinfo.go
+// @Description 关于 管理员查看用户信息功能 的实现
+// @Author 矫晓佳 ${DATE} ${TIME}
+
 package admin
 
 import (

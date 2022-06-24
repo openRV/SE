@@ -1,3 +1,7 @@
+// @Title deleteuser.go
+// @Description 关于 管理员删除用户功能 的实现
+// @Author 矫晓佳 ${DATE} ${TIME}
+
 package admin
 
 import (

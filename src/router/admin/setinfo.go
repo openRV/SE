@@ -1,3 +1,7 @@
+// @Title setinfo.go
+// @Description 关于 管理员更改自身信息（账户名、密码、头像）功能 的实现
+// @Author 矫晓佳 ${DATE} ${TIME}
+
 package admin
 
 import (
