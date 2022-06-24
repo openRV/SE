@@ -30,6 +30,12 @@ func InitToken(keyStr string, hourTime int) {
 	effectTime = time.Hour * time.Duration(hourTime)
 }
 
+//@title func TokenCheck
+//@description 返回一个函数闭包，用于解析用户的 token 是否合法，用户名密码时间是否正确，并在请求头中插入用户名密码等信息
+//@param key string 解析 token 所需的密钥
+//@param effectTime time.Duration 令牌过期的时间
+//@result func gin.HanlderFunc 用于解析 token 并判断权限的事务函数
+
 func TokenCheck() gin.HandlerFunc {
 	return func(c *gin.Context) {
 

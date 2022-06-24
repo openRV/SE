@@ -11,6 +11,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//@title func AdminOnly
+//@description 返回一个函数闭包，用于判断用户的身份是否是管理员，若不是，则拦截请求
+//@result func gin.HanlderFunc 用于判断并拦截不符合身份的用户的事务函数
+
 func AdminOnly() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if c.Request.Header.Get("Role") == "admin" {

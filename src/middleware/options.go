@@ -1,5 +1,5 @@
 // @Title options.go
-// @Description
+// @Description 用于响应 Options 预处理请求的函数
 // @Author 杜沛然 ${DATE} ${TIME}
 
 package middleware
@@ -9,6 +9,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+//@title func Cors
+//@description 返回一个函数闭包，用于响应 Options 预处理请求。如果收到的请求类型是Options，则在请求头插入服务器支持的响应类型，并直接返回（AbortWithStatus{StatusNoContent}）
+//@result func gin.HandlerFunc 用于处理 Options 请求的事务函数
 
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
