@@ -1,3 +1,7 @@
+// @Title admin.go
+// @Description 用于管理员身份认证的中间件
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package middleware
 
 import (

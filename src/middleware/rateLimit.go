@@ -1,3 +1,7 @@
+// @Title rateLimit.go
+// @Description 用于控制流量的中间件
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package middleware
 
 // 中间件

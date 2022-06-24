@@ -1,3 +1,7 @@
+// @Title DeleteUser.go
+// @Description 中间件中关于 toke 处理的函数、数据结构
+// @Author 杜沛然 ${DATE} ${TIME}
+
 package middleware
 
 import (
